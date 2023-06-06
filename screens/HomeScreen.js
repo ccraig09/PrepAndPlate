@@ -21,36 +21,38 @@ import moment from "moment";
 import * as mealAction from "../redux/actions/mealsAction";
 
 const HomeScreen = (props) => {
-  // const dispatch = useDispatch();
-  // const { meals } = useSelector((state) => state.meals);
-  // const [isLoading, setIsLoading] = useState(false);
-
-  // useEffect(() => {
-  //   setIsLoading(true);
-
-  //   dispatch(mealAction.loadMeals())
-  //     .then(() => setIsLoading(false))
-  //     .catch(() => setIsLoading(false));
-  //   const date = new Date();
-  //   console.log(date.toISOString().split("T")[0]);
-
-  //   console.log(">>>>testing", meals);
-  // }, [dispatch]);
-
-  // console.log(">>>>testing2", meals.title);
-  // if (isLoading) {
-  //   return (
-  //     <View style={styles.centered}>
-  //       <ActivityIndicator size={"large"} />
-  //     </View>
-  //   );
-  // }
+  const dispatch = useDispatch();
+  const { meals } = useSelector((state) => state.meals);
+  const [isLoading, setIsLoading] = useState(false);
 
   const currentDay = moment();
-
-  const [selectedDay, setSelectedDay] = React.useState(
+  const [selectedDay, setSelectedDay] = useState(
     currentDay.format("YYYY-MM-DD")
   );
+
+  useEffect(() => {
+    setIsLoading(true);
+
+    dispatch(mealAction.loadMeals())
+      .then((res) => {
+        console.log("then res", res);
+        setIsLoading(false);
+      })
+      .catch(() => setIsLoading(false));
+    const date = new Date();
+    console.log(date.toISOString().split("T")[0]);
+
+    console.log(">>>>testing", meals);
+  }, [dispatch]);
+
+  console.log(">>>>testing2", meals.title);
+  if (isLoading) {
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+  }
 
   const data = [
     {
@@ -322,24 +324,28 @@ const HomeScreen = (props) => {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      {/* <HeadCard
+        navigation={props.navigation}
+        title={meals[0].title}
+        image={meals[0].image}
+        prepTime={meals[0].readyInMinutes}
+        healthScore={meals[0].healthScore}
+        id={meals[0].id}
+      /> */}
       <CalendarProvider
         date={selectedDay}
         onDateChanged={selectDay}
         disabledOpacity={0.6}
       >
         <ExpandableCalendar
-          minDate={moment()
-            .subtract(6, "M")
-            .startOf("month")
-            .format("YYYY-MM-DD")}
-          maxDate={moment().format("YYYY-MM-DD")}
+          // minDate={moment()
+          //   .subtract(6, "M")
+          //   .startOf("month")
+          //   .format("YYYY-MM-DD")}
           showWeekNumbers
           disableWeekScroll={true}
-          firstDay={6}
-          pastScrollRange={6}
-          futureScrollRange={0}
           markingType={"custom"}
-          calendarHeight={374}
+          calendarHeight={300}
           weekHeading={"dateAndTimes.weekBig"}
         />
         <AgendaList sections={data} renderItem={renderItem} />

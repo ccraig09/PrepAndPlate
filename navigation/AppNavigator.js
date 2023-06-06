@@ -10,6 +10,7 @@ const Tab = createBottomTabNavigator();
 import HomeScreen from "../screens/HomeScreen";
 import MealDetailsScreen from "../screens/MealDetailsScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
+import SearchScreen from "../screens/SearchScreen";
 // import RegisterScreen from "../screens/RegisterScreen";
 
 function HomeStack() {
@@ -48,6 +49,8 @@ function AppNavigator() {
               iconName = "home";
             } else if (route.name === "Favorites") {
               iconName = "star";
+            } else if (route.name === "Search") {
+              iconName = "search";
             }
             return <MaterialIcons name={iconName} size={24} />;
           },
@@ -56,6 +59,7 @@ function AppNavigator() {
       >
         <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Favorites" component={FavoritesStack} />
+        <Tab.Screen name="Search" component={SearchScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
