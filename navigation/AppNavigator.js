@@ -58,8 +58,8 @@ function AppNavigator() {
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Favorites" component={FavoritesStack} />
         <Tab.Screen name="Search" component={SearchScreen} />
+        <Tab.Screen name="Favorites" component={FavoritesStack} />
       </Tab.Navigator>
     </NavigationContainer>
   );
