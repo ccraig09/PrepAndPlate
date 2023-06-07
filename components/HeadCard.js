@@ -6,12 +6,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 const HeadCard = (props) => {
-  console.log(">>props");
+  const navigation = useNavigation();
+
   return (
     <TouchableOpacity
-      onPress={() => props.navigation.navigate("Details", { mealId: props.id })}
+      onPress={() => navigation.navigate("Details", { mealId: props.id })}
     >
       <View style={styles.card}>
         <View style={styles.titleContainer}>

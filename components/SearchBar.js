@@ -2,7 +2,13 @@ import React from "react";
 import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
 import { Feather, Entypo } from "@expo/vector-icons";
 
-const SearchBar = ({ clicked, searchWord, setSearchWord, setClicked }) => {
+const SearchBar = ({
+  clicked,
+  searchWord,
+  setSearchWord,
+  setClicked,
+  onSearch,
+}) => {
   return (
     <View style={styles.container}>
       <View
@@ -21,6 +27,8 @@ const SearchBar = ({ clicked, searchWord, setSearchWord, setClicked }) => {
           placeholder="Search"
           value={searchWord}
           onChangeText={setSearchWord}
+          returnKeyType="search"
+          onSubmitEditing={onSearch}
           onFocus={() => {
             setClicked(true);
           }}

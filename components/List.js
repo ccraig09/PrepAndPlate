@@ -5,7 +5,6 @@ import HeadCard from "./HeadCard";
 
 const List = ({ searchWord, setClicked, data }) => {
   const renderItem = ({ item }) => {
-    console.log(searchWord);
     // when no input, show all
     if (searchWord === "") {
       return <HeadCard title={item.name} details={item.details} />;
@@ -38,7 +37,15 @@ const List = ({ searchWord, setClicked, data }) => {
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
-          renderItem={renderItem}
+          renderItem={({ item }) => (
+            <HeadCard
+              title={item.title}
+              image={item.image}
+              prepTime={item.readyInMinutes}
+              healthScore={item.healthScore}
+              id={item.id}
+            />
+          )}
         />
       </View>
     </SafeAreaView>
@@ -50,7 +57,7 @@ export default List;
 const styles = StyleSheet.create({
   list__container: {
     margin: 10,
-    height: "85%",
+    height: "95%",
     width: "100%",
   },
   item: {

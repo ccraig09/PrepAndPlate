@@ -1,7 +1,8 @@
-import { LOAD_MEALS } from "../actions/mealsAction";
+import { LOAD_MEALS, SEARCH_MEALS } from "../actions/mealsAction";
 
 const initialState = {
   meals: [],
+  searchResults: [],
 };
 
 export default function (state = initialState, action) {
@@ -10,6 +11,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         meals: action.payload,
+      };
+    case SEARCH_MEALS:
+      return {
+        ...state,
+        searchResults: action.payload,
       };
     default:
       return state;

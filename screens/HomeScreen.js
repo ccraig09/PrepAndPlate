@@ -30,22 +30,22 @@ const HomeScreen = (props) => {
     currentDay.format("YYYY-MM-DD")
   );
 
-  useEffect(() => {
-    setIsLoading(true);
+  // useEffect(() => {
+  //   setIsLoading(true);
 
-    dispatch(mealAction.loadMeals())
-      .then((res) => {
-        console.log("then res", res);
-        setIsLoading(false);
-      })
-      .catch(() => setIsLoading(false));
-    const date = new Date();
-    console.log(date.toISOString().split("T")[0]);
+  //   dispatch(mealAction.loadMeals())
+  //     .then((res) => {
+  //       console.log("then res", res);
+  //       setIsLoading(false);
+  //     })
+  //     .catch(() => setIsLoading(false));
+  //   const date = new Date();
+  //   console.log(date.toISOString().split("T")[0]);
 
-    console.log(">>>>testing", meals);
-  }, [dispatch]);
+  //   console.log(">>>>testing", meals);
+  // }, [dispatch]);
 
-  console.log(">>>>testing2", meals.title);
+  // console.log(">>>>testing2", meals.title);
   if (isLoading) {
     return (
       <View style={styles.centered}>

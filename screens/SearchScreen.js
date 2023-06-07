@@ -6,25 +6,44 @@ import {
   View,
   ActivityIndicator,
 } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+
 import List from "../components/List";
 import SearchBar from "../components/SearchBar";
+import * as mealAction from "../redux/actions/mealsAction";
 
 const SearchScreen = () => {
+  const dispatch = useDispatch();
+  const { searchResults } = useSelector((state) => state.meals);
+
   const [searchWord, setSearchWord] = useState("");
   const [clicked, setClicked] = useState(false);
   const [fakeData, setFakeData] = useState();
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    const getData = async () => {
-      const apiResponse = await fetch(
-        "https://my-json-server.typicode.com/kevintomas1995/logRocket_searchBar/languages"
-      );
-      const data = await apiResponse.json();
-      setFakeData(data);
-      console.log(data);
-    };
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const apiResponse = await fetch(
+  //       "https://my-json-server.typicode.com/kevintomas1995/logRocket_searchBar/languages"
+  //     );
+  //     const data = await apiResponse.json();
+  //     setFakeData(data);
+  //     // console.log(data);
+  //   };
+  //   getData();
+  // }, []);
+
+  const onSearch = () => {
+    setIsLoading(true);
+    dispatch(mealAction.searchMeals(searchWord))
+      .then(() => {
+        setIsLoading(false);
+      })
+      .catch((e) => {
+        console.log(e);
+        setIsLoading(false);
+      });
+  };
 
   return (
     <SafeAreaView style={styles.root}>
@@ -34,14 +53,17 @@ const SearchScreen = () => {
         setSearchWord={setSearchWord}
         clicked={clicked}
         setClicked={setClicked}
+        onSearch={onSearch}
       />
-      {!fakeData ? (
+      {isLoading ? (
         <ActivityIndicator size="large" />
       ) : (
-        <List searchWord={searchWord} data={fakeData} setClicked={setClicked} />
+        <List
+          searchWord={searchWord}
+          data={searchResults}
+          setClicked={setClicked}
+        />
       )}
-
-      <Text>{searchWord}</Text>
     </SafeAreaView>
   );
 };

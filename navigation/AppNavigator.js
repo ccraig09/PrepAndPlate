@@ -37,6 +37,18 @@ function FavoritesStack() {
     </Stack.Navigator>
   );
 }
+function SearchStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SearchScreen"
+        component={SearchScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen name="Details" component={MealDetailsScreen} />
+    </Stack.Navigator>
+  );
+}
 
 function AppNavigator() {
   return (
@@ -58,7 +70,7 @@ function AppNavigator() {
         })}
       >
         <Tab.Screen name="Home" component={HomeStack} />
-        <Tab.Screen name="Search" component={SearchScreen} />
+        <Tab.Screen name="Search" component={SearchStack} />
         <Tab.Screen name="Favorites" component={FavoritesStack} />
       </Tab.Navigator>
     </NavigationContainer>
