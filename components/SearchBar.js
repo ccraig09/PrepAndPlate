@@ -19,8 +19,8 @@ const SearchBar = ({ clicked, searchWord, setSearchWord, setClicked }) => {
         <TextInput
           style={styles.input}
           placeholder="Search"
-          value={searchPhrase}
-          onChangeText={setSearchPhrase}
+          value={searchWord}
+          onChangeText={setSearchWord}
           onFocus={() => {
             setClicked(true);
           }}
@@ -32,7 +32,7 @@ const SearchBar = ({ clicked, searchWord, setSearchWord, setClicked }) => {
             color="black"
             style={{ padding: 1 }}
             onPress={() => {
-              setSearchPhrase("");
+              setSearchWord("");
             }}
           />
         )}

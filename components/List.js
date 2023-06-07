@@ -3,27 +3,28 @@ import { StyleSheet, Text, View, FlatList, SafeAreaView } from "react-native";
 
 import HeadCard from "./HeadCard";
 
-const List = ({ searchPhrase, setClicked, data }) => {
+const List = ({ searchWord, setClicked, data }) => {
   const renderItem = ({ item }) => {
+    console.log(searchWord);
     // when no input, show all
-    if (searchPhrase === "") {
-      return <HeadCard name={item.name} details={item.details} />;
+    if (searchWord === "") {
+      return <HeadCard title={item.name} details={item.details} />;
     }
     // filter of the name
     if (
       item.name
         .toUpperCase()
-        .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))
+        .includes(searchWord.toUpperCase().trim().replace(/\s/g, ""))
     ) {
-      return <HeadCard name={item.name} details={item.details} />;
+      return <HeadCard title={item.name} details={item.details} />;
     }
     // filter of the description
     if (
       item.details
         .toUpperCase()
-        .includes(searchPhrase.toUpperCase().trim().replace(/\s/g, ""))
+        .includes(searchWord.toUpperCase().trim().replace(/\s/g, ""))
     ) {
-      return <HeadCard name={item.name} details={item.details} />;
+      return <HeadCard title={item.name} details={item.details} />;
     }
   };
 
@@ -37,16 +38,7 @@ const List = ({ searchPhrase, setClicked, data }) => {
         <FlatList
           data={data}
           keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <HeadCard
-              navigation={props.navigation}
-              title={item.title}
-              image={item.image}
-              prepTime={item.readyInMinutes}
-              healthScore={item.healthScore}
-              id={item.id}
-            />
-          )}
+          renderItem={renderItem}
         />
       </View>
     </SafeAreaView>
