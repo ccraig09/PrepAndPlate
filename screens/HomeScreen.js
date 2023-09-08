@@ -388,3 +388,141 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+// import React from "react";
+// import { View, Text, FlatList, Image, StyleSheet } from "react-native";
+// import Icon from "react-native-vector-icons/FontAwesome"; // You can choose any icon library you prefer
+
+// const data = [
+//   {
+//     day: "Today",
+//     meals: [
+//       {
+//         id: 1,
+//         title: "Breakfast",
+//         // image: require("./images/breakfast.jpg"),
+//         calories: 350,
+//         prepTime: "20 mins",
+//         servings: 2,
+//       },
+//       // Add more meal items for Today
+//     ],
+//   },
+//   {
+//     day: "Tomorrow",
+//     meals: [
+//       {
+//         id: 2,
+//         title: "Lunch",
+//         // image: require("./images/lunch.jpg"),
+//         calories: 450,
+//         prepTime: "30 mins",
+//         servings: 3,
+//       },
+//       // Add more meal items for Tomorrow
+//     ],
+//   },
+//   // Add more days with meals for Days to Come
+// ];
+
+// const HomeScreen = () => {
+//   const renderItem = ({ item }) => (
+//     <View style={styles.card}>
+//       <Image source={item.image} style={styles.image} />
+//       <View style={styles.info}>
+//         <Text style={styles.title}>{item.title}</Text>
+//         <View style={styles.detailsContainer}>
+//           <View style={styles.detailItem}>
+//             <Icon name="clock-o" size={18} color="#888" />
+//             {/* Icon for Prep Time */}
+//             <Text style={styles.detailText}>{item.prepTime}</Text>
+//           </View>
+//           <View style={styles.detailItem}>
+//             <Icon name="users" size={18} color="#888" />
+//             {/* Icon for Serving Count */}
+//             <Text style={styles.detailText}>{item.servings}</Text>
+//           </View>
+//         </View>
+//       </View>
+//     </View>
+//   );
+
+//   return (
+//     <View style={styles.container}>
+//       <FlatList
+//         data={data}
+//         keyExtractor={(item) => item.day}
+//         renderItem={({ item }) => (
+//           <>
+//             <Text style={styles.day}>{item.day}</Text>
+//             <FlatList
+//               data={item.meals}
+//               keyExtractor={(meal) => meal.id.toString()}
+//               renderItem={renderItem}
+//               horizontal
+//             />
+//           </>
+//         )}
+//       />
+//     </View>
+//   );
+// };
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 16,
+//     backgroundColor: "#F5F5F5",
+//   },
+//   day: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     marginBottom: 8,
+//   },
+//   card: {
+//     flexDirection: "row",
+//     backgroundColor: "white",
+//     borderRadius: 8,
+//     padding: 16,
+//     margin: 8,
+//     alignItems: "center",
+//     elevation: 4,
+//     shadowColor: "black",
+//     shadowOpacity: 0.2,
+//     shadowOffset: { width: 0, height: 2 },
+//   },
+//   image: {
+//     width: 80,
+//     height: 80,
+//     borderRadius: 8,
+//     marginRight: 16,
+//   },
+//   info: {
+//     flex: 1,
+//   },
+//   title: {
+//     fontSize: 16,
+//     fontWeight: "bold",
+//   },
+//   details: {
+//     fontSize: 12,
+//     color: "#888",
+//   },
+//   detailsContainer: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     marginTop: 8,
+//   },
+//   detailItem: {
+//     flexDirection: "row",
+//     alignItems: "center",
+//     marginRight: 12,
+//   },
+//   detailText: {
+//     fontSize: 12,
+//     color: "#888",
+//     marginLeft: 4,
+//   },
+// });
+
+// export default HomeScreen;
