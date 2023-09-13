@@ -590,15 +590,37 @@
 // };
 
 // export default HomeScreen;
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { View, Text, Button, SectionList, StyleSheet } from "react-native";
 import moment from "moment";
 import mealPrepData from "../components/DummyData";
+import SectionItem from "../components/SectionItem";
+import CustomHeader from "../components/CustomHeader";
+import { useWeekRelationship } from "../hooks/useWeekRelationship";
 const HomeScreen = () => {
   const [currentWeek, setCurrentWeek] = useState(moment());
 
   const weekStart = currentWeek.clone().startOf("week");
   const weekEnd = currentWeek.clone().endOf("week");
+  const weekRelationship = useWeekRelationship(currentWeek);
+  const sectionListRef = useRef(null);
+
+  const headerText = () => {
+    switch (weekRelationship) {
+      case "This Week":
+        console.log("The date is in this week.");
+        break;
+      case "Next Week":
+        console.log("The date is in next week.");
+        break;
+      case "Last Week":
+        console.log("The date is in last week.");
+        break;
+      default:
+        console.log("The date is in another week.");
+        break;
+    }
+  };
 
   const filteredMealPrepData = mealPrepData.filter((meal) => {
     const mealDate = moment(meal.date, "YYYY-MM-DD");
@@ -608,9 +630,30 @@ const HomeScreen = () => {
   const formattedCurrentWeek = currentWeek.format("MMMM Do YYYY");
 
   useEffect(() => {
-    console.log("Current Week:", formattedCurrentWeek);
-    console.log("Meal Prep Data for Current Week:", filteredMealPrepData);
-  }, [formattedCurrentWeek, filteredMealPrepData]);
+    // Find the section index for today's date
+    const today = moment().format("ddd MMM D");
+    const todayIndex = sections.findIndex((section) => section.title === today);
+    console.log("todayIndex: " + todayIndex);
+    if (todayIndex !== -1 && sectionListRef.current) {
+      // Scroll to the section for today
+      setTimeout(() => {
+        sectionListRef.current.scrollToLocation({
+          sectionIndex: todayIndex,
+          itemIndex: 0,
+          animated: true,
+        });
+      }, 100);
+    }
+  }, []);
+
+  const getItemLayout = (_, index) => {
+    // Return the item layout information for the given index
+    return {
+      length: 60, // Replace with the actual item height
+      offset: 60 * index,
+      index,
+    };
+  };
 
   const goToPreviousWeek = () => {
     setCurrentWeek(currentWeek.clone().subtract(1, "week"));
@@ -622,7 +665,7 @@ const HomeScreen = () => {
 
   // Organize meal prep data into sections by date
   const groupedMealPrepData = filteredMealPrepData.reduce((acc, meal) => {
-    const date = moment(meal.date, "YYYY-MM-DD").format("MMMM Do YYYY");
+    const date = moment(meal.date, "YYYY-MM-DD").format("ddd MMM D");
 
     if (!acc[date]) {
       acc[date] = [];
@@ -639,25 +682,55 @@ const HomeScreen = () => {
     data: groupedMealPrepData[date],
   }));
 
+  const renderSectionHeader = ({ section }) => {
+    const sectionDate = moment(section.title, "ddd MMM D");
+    const today = moment().startOf("day");
+    const tomorrow = today.clone().add(1, "day");
+
+    if (sectionDate.isSame(today, "day")) {
+      return <Text style={styles.sectionHeader}>Today</Text>;
+    } else if (sectionDate.isSame(tomorrow, "day")) {
+      return <Text style={styles.sectionHeader}>Tomorrow</Text>;
+    } else {
+      return <Text style={styles.sectionHeader}>{section.title}</Text>;
+    }
+  };
+
+  const renderEmptySection = () => (
+    <View style={styles.sectionContainer}>
+      <Text style={styles.noData}>
+        No meal prep items scheduled for this week.
+      </Text>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Current Week: {formattedCurrentWeek}</Text>
-      <Button title="Previous Week" onPress={goToPreviousWeek} />
-      <Button title="Next Week" onPress={goToNextWeek} />
-
-      <SectionList
-        sections={sections}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text>Meal: {item.meal}</Text>
-            <Text>Description: {item.description}</Text>
-          </View>
-        )}
-        renderSectionHeader={({ section: { title } }) => (
-          <Text style={styles.sectionHeader}>{title}</Text>
-        )}
+      <CustomHeader
+        leftButtonText={"Back"}
+        rightButtonText={"Edit"}
+        onLeftButtonPress={goToPreviousWeek}
+        onRightButtonPress={goToNextWeek}
+        title={weekRelationship}
       />
+      <View style={styles.sectionContainer}>
+        {/* {filteredMealPrepData.length === 0 ? (
+          <Text style={styles.noData}>
+            No meal prep items scheduled for this week.
+          </Text>
+        ) : ( */}
+        <SectionList
+          ref={sectionListRef}
+          showsVerticalScrollIndicator={false}
+          sections={sections}
+          keyExtractor={(item, index) => item + index}
+          renderItem={SectionItem}
+          renderSectionHeader={renderSectionHeader}
+          ListEmptyComponent={renderEmptySection}
+          getItemLayout={getItemLayout}
+        />
+        {/* )} */}
+      </View>
     </View>
   );
 };
@@ -665,16 +738,20 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    backgroundColor: "#fff",
+    // padding: 16,
+  },
+  sectionContainer: {
+    flex: 1,
   },
   heading: {
     fontSize: 18,
     fontWeight: "bold",
   },
   sectionHeader: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: "bold",
-    backgroundColor: "lightgray",
+    backgroundColor: "#fff",
     padding: 8,
   },
   item: {

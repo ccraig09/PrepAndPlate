@@ -19,7 +19,7 @@ function HomeStack() {
       <Stack.Screen
         name="HomeScreen"
         component={HomeScreen}
-        options={{ headerBackVisible: false, headerTitle: "" }}
+        options={{ headerShown: false, headerTitle: "" }}
       />
       <Stack.Screen name="Details" component={MealDetailsScreen} />
     </Stack.Navigator>
