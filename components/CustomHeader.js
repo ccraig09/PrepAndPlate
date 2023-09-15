@@ -7,6 +7,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
+import Colors from "../constants/Colors";
 
 const CustomHeader = ({ title, onLeftButtonPress, onRightButtonPress }) => {
   return (
@@ -29,7 +30,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-around",
     alignItems: "center",
-    backgroundColor: "#008080",
+    backgroundColor: Colors.primary,
     paddingHorizontal: 20,
   },
   title: {

@@ -21,6 +21,6 @@ export function useWeekRelationship(dateToCheck) {
   ) {
     return "Last Week";
   } else {
-    return "Week of " + moment(dateToCheck).format("ddd MMM D");
+    return "Week of " + moment(dateToCheck).format("MMM D");
   }
 }

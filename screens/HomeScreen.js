@@ -591,7 +591,14 @@
 
 // export default HomeScreen;
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, Button, SectionList, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Button,
+  SectionList,
+  StyleSheet,
+  ImageBackground,
+} from "react-native";
 import moment from "moment";
 import mealPrepData from "../components/DummyData";
 import SectionItem from "../components/SectionItem";
@@ -688,7 +695,11 @@ const HomeScreen = () => {
     const tomorrow = today.clone().add(1, "day");
 
     if (sectionDate.isSame(today, "day")) {
-      return <Text style={styles.sectionHeader}>Today</Text>;
+      return (
+        <View>
+          <Text style={styles.sectionHeader}>Today</Text>
+        </View>
+      );
     } else if (sectionDate.isSame(tomorrow, "day")) {
       return <Text style={styles.sectionHeader}>Tomorrow</Text>;
     } else {
@@ -706,31 +717,36 @@ const HomeScreen = () => {
 
   return (
     <View style={styles.container}>
-      <CustomHeader
-        leftButtonText={"Back"}
-        rightButtonText={"Edit"}
-        onLeftButtonPress={goToPreviousWeek}
-        onRightButtonPress={goToNextWeek}
-        title={weekRelationship}
-      />
-      <View style={styles.sectionContainer}>
-        {/* {filteredMealPrepData.length === 0 ? (
+      <ImageBackground
+        source={require("../assets/tree.jpeg")}
+        style={styles.backgroundImage}
+      >
+        <CustomHeader
+          leftButtonText={"Back"}
+          rightButtonText={"Edit"}
+          onLeftButtonPress={goToPreviousWeek}
+          onRightButtonPress={goToNextWeek}
+          title={weekRelationship}
+        />
+        <View style={styles.sectionContainer}>
+          {/* {filteredMealPrepData.length === 0 ? (
           <Text style={styles.noData}>
             No meal prep items scheduled for this week.
           </Text>
         ) : ( */}
-        <SectionList
-          ref={sectionListRef}
-          showsVerticalScrollIndicator={false}
-          sections={sections}
-          keyExtractor={(item, index) => item + index}
-          renderItem={SectionItem}
-          renderSectionHeader={renderSectionHeader}
-          ListEmptyComponent={renderEmptySection}
-          getItemLayout={getItemLayout}
-        />
-        {/* )} */}
-      </View>
+          <SectionList
+            ref={sectionListRef}
+            showsVerticalScrollIndicator={false}
+            sections={sections}
+            keyExtractor={(item, index) => item + index}
+            renderItem={SectionItem}
+            renderSectionHeader={renderSectionHeader}
+            ListEmptyComponent={renderEmptySection}
+            getItemLayout={getItemLayout}
+          />
+          {/* )} */}
+        </View>
+      </ImageBackground>
     </View>
   );
 };
@@ -739,7 +755,10 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    // padding: 16,
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
   },
   sectionContainer: {
     flex: 1,
@@ -751,7 +770,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     fontSize: 20,
     fontWeight: "bold",
-    backgroundColor: "#fff",
+    backgroundColor: "rgba(255,255,255, .4)",
     padding: 8,
   },
   item: {

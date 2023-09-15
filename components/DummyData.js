@@ -9,7 +9,7 @@ const mealPrepData = [
     prepTime: "30 minutes",
     calories: 350,
     rating: 5,
-    image: "https://example.com/meal1.jpg",
+    image: "https://picsum.photos/200",
   },
   {
     id: "2",
@@ -20,7 +20,7 @@ const mealPrepData = [
     prepTime: "25 minutes",
     calories: 280,
     rating: 4.5,
-    image: "https://example.com/meal2.jpg",
+    image: "https://picsum.photos/200",
   },
   {
     id: "3",
@@ -31,7 +31,7 @@ const mealPrepData = [
     prepTime: "35 minutes",
     calories: 420,
     rating: 4.8,
-    image: "https://example.com/meal3.jpg",
+    image: "https://picsum.photos/200",
   },
   {
     id: "4",
@@ -42,7 +42,7 @@ const mealPrepData = [
     prepTime: "20 minutes",
     calories: 280,
     rating: 4.2,
-    image: "https://example.com/meal4.jpg",
+    image: "https://picsum.photos/200",
   },
   {
     id: "5",
@@ -53,7 +53,7 @@ const mealPrepData = [
     prepTime: "15 minutes",
     calories: 220,
     rating: 4.6,
-    image: "https://example.com/meal5.jpg",
+    image: "https://picsum.photos/200",
   },
   {
     id: "6",
@@ -64,7 +64,7 @@ const mealPrepData = [
     prepTime: "40 minutes",
     calories: 380,
     rating: 4.4,
-    image: "https://example.com/meal6.jpg",
+    image: "https://picsum.photos/200",
   },
 
   // Week 2
@@ -77,7 +77,7 @@ const mealPrepData = [
     prepTime: "15 minutes",
     calories: 280,
     rating: 4.7,
-    image: "https://example.com/meal7.jpg",
+    image: "https://picsum.photos/200",
   },
   {
     id: "8",
@@ -88,7 +88,40 @@ const mealPrepData = [
     prepTime: "35 minutes",
     calories: 400,
     rating: 4.6,
-    image: "https://example.com/meal8.jpg",
+    image: "https://picsum.photos/200",
+  },
+  {
+    id: "9",
+    date: "2023-09-14",
+    timeOfDay: "Dinner",
+    title: "Teriyaki Salmon",
+    servingSize: "2 servings",
+    prepTime: "35 minutes",
+    calories: 400,
+    rating: 4.6,
+    image: "https://picsum.photos/200",
+  },
+  {
+    id: "10",
+    date: "2023-09-14",
+    timeOfDay: "Dinner",
+    title: "Teriyaki Salmon",
+    servingSize: "2 servings",
+    prepTime: "35 minutes",
+    calories: 400,
+    rating: 4.6,
+    image: "https://picsum.photos/200",
+  },
+  {
+    id: "11",
+    date: "2023-09-15",
+    timeOfDay: "Dinner",
+    title: "Teriyaki Salmon",
+    servingSize: "2 servings",
+    prepTime: "35 minutes",
+    calories: 400,
+    rating: 4.6,
+    image: "https://picsum.photos/200",
   },
   // Add more meal prep items for different weeks and dates
 ];
