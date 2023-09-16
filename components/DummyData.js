@@ -22,6 +22,7 @@ const mealPrepData = [
     rating: 4.5,
     image: "https://picsum.photos/200",
   },
+
   {
     id: "3",
     date: "2023-09-11",
@@ -121,6 +122,17 @@ const mealPrepData = [
     prepTime: "35 minutes",
     calories: 400,
     rating: 4.6,
+    image: "https://picsum.photos/200",
+  },
+  {
+    id: "4",
+    date: "2023-09-16",
+    timeOfDay: "Dinner",
+    title: "Baked Salmon",
+    servingSize: "2 servings",
+    prepTime: "35 minutes",
+    calories: 420,
+    rating: 4.8,
     image: "https://picsum.photos/200",
   },
   // Add more meal prep items for different weeks and dates

@@ -43,12 +43,5 @@ const styles = StyleSheet.create({
     color: "white",
   },
 });
-// Emerald Green (#2ecc71): This is a bright and vibrant green that can give your app a fresh and energetic feel.
-
-// Matcha Green (#8bd060): Inspired by matcha tea, this green color signifies natural and organic choices.
-
-// Kiwi Green (#8ee53f): A vibrant and juicy green that suggests vitality and energy.
-
-// Spinach Green (#4caf50): A shade of green that is associated with health and well-being.
 
 export default CustomHeader;
