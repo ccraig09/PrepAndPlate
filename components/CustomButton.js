@@ -10,9 +10,11 @@ const CustomButton = ({
   iconName,
   iconSize,
   iconColor,
+  onPress,
 }) => {
   return (
     <Button
+      onPress={onPress}
       title={title}
       loading={loading}
       icon={{
@@ -34,7 +36,7 @@ const CustomButton = ({
         paddingVertical: 10,
       }}
       containerStyle={{
-        width: "80%",
+        width: "85%",
         marginHorizontal: 50,
         marginVertical: 10,
       }}

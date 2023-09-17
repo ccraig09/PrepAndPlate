@@ -1,10 +1,13 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
-import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
+
 import CustomButton from "../components/CustomButton";
 import Colors from "../constants/Colors";
 
 const WelomeScreen = () => {
+  const navigation = useNavigation();
+
   return (
     <View style={styles.container}>
       <Image
@@ -12,13 +15,21 @@ const WelomeScreen = () => {
         resizeMode="contain"
         style={styles.image}
       />
-      <View style={styles.buttonContainer}>
+      <View style={styles.box}>
         <CustomButton
           title={"Sign up with email"}
           backgroundColor={Colors.primary}
           textColor={"white"}
+          onPress={() => {
+            navigation.navigate("Register");
+          }}
         />
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
           <View
             style={{
               width: "20%",
@@ -45,11 +56,16 @@ const WelomeScreen = () => {
           backgroundColor={Colors.primary}
           textColor={"white"}
         />
+        <Text style={styles.loginText}>
+          Already have an account?{" "}
+          <Text
+            style={{ textDecorationLine: "underline" }}
+            onPress={() => navigation.navigate("Login")}
+          >
+            Log In
+          </Text>
+        </Text>
       </View>
-      <Text>
-        Already have an account?{" "}
-        <Text style={{ textDecorationLine: "underline" }}>Log In</Text>
-      </Text>
     </View>
   );
 };
@@ -60,14 +76,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+  },
+  box: {
+    paddingTop: 15,
+    alignItems: "center",
+    backgroundColor: "white",
+    height: "50%",
+    width: "90%",
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    elevation: 5,
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
   },
   image: {
     height: 300,
     width: 300,
   },
-  buttonContainer: {
-    alignItems: "center",
-    width: "100%",
+
+  loginText: {
+    fontSize: 16,
+    marginTop: 20,
+    fontWeight: "500",
   },
 });
