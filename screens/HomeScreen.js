@@ -45,12 +45,10 @@ const HomeScreen = () => {
   const formattedCurrentWeek = currentWeek.format("MMMM Do YYYY");
 
   useEffect(() => {
-    // Find the section index for today's date
     const today = moment().format("ddd MMM D");
     const todayIndex = sections.findIndex((section) => section.title === today);
     console.log("todayIndex: " + todayIndex);
     if (todayIndex !== -1 && sectionListRef.current) {
-      // Scroll to the section for today
       setTimeout(() => {
         sectionListRef.current.scrollToLocation({
           sectionIndex: todayIndex,
@@ -70,9 +68,8 @@ const HomeScreen = () => {
   }, []);
 
   const getItemLayout = (_, index) => {
-    // Return the item layout information for the given index
     return {
-      length: 60, // Replace with the actual item height
+      length: 60,
       offset: 60 * index,
       index,
     };
