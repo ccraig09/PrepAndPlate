@@ -78,10 +78,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   box: {
-    paddingTop: 15,
+    justifyContent: "center",
     alignItems: "center",
     backgroundColor: "white",
-    height: "50%",
+    height: "40%",
     width: "90%",
     borderRadius: 10,
     shadowColor: "#000",

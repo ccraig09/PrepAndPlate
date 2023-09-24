@@ -7,13 +7,17 @@ import {
   TextInput,
   Image,
   TouchableOpacity,
+  SafeAreaView,
   Platform,
+  Dimensions,
   Alert,
 } from "react-native";
 import React from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { Input } from "@rneui/themed";
+import { useNavigation } from "@react-navigation/native";
+
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Colors from "../constants/Colors";
@@ -41,21 +45,24 @@ const formSchema = yup.object({
     .required("Password is required")
     .min(6, "Password must have at least 6 characters"),
 });
+const screenWidth = Dimensions.get("window").width;
 
 const RegisterScreen = () => {
+  const navigation = useNavigation();
+
   return (
-    <View style={styles.container}>
-      <Image
-        source={require("../assets/appLogo.png")}
-        resizeMode="contain"
-        style={styles.image}
-      />
-      <Text styfrle={styles.text}>Sign Up</Text>
-      <View style={styles.box}>
-        <KeyboardAvoidingView
-          behavior={Platform.OS === "ios" ? "padding" : "height"}
-          style={{ flex: 1 }}
-        >
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={styles.container}
+    >
+      <SafeAreaView style={styles.container}>
+        <Image
+          source={require("../assets/appLogo.png")}
+          resizeMode="cover"
+          style={styles.image}
+        />
+        <Text style={styles.text}>Sign Up</Text>
+        <View style={styles.box}>
           <Formik
             initialValues={{
               firstName: "",
@@ -147,11 +154,12 @@ const RegisterScreen = () => {
                   backgroundColor={Colors.primary}
                   textColor={"white"}
                   onPress={handleSubmit}
+                  containerStyle={{ width: screenWidth * 0.8 }}
                 />
                 <View style={styles.registerContainer}>
                   <Text style={styles.registerText}>Have an account? </Text>
                   <TouchableOpacity
-                    onPress={() => navData.navigation.navigate("Login")}
+                    onPress={() => navigation.navigate("Login")}
                   >
                     <Text style={styles.registerButton}>Login</Text>
                   </TouchableOpacity>
@@ -159,9 +167,9 @@ const RegisterScreen = () => {
               </View>
             )}
           </Formik>
-        </KeyboardAvoidingView>
-      </View>
-    </View>
+        </View>
+      </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -170,17 +178,21 @@ export default RegisterScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    justifyContent: "center",
     alignItems: "center",
   },
+
   image: {
-    height: 300,
-    width: 300,
+    height: 150,
+    width: 200,
   },
   box: {
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: "white",
-    height: "60%",
+    padding: 20,
+    // height: "60%",
+    marginBottom: 10,
     width: "90%",
     borderRadius: 10,
     shadowColor: "#000",
@@ -194,25 +206,20 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    marginTop: 20,
-    fontSize: 20,
+    fontSize: 30,
+    marginBottom: 10,
     fontWeight: "bold",
     color: "black",
     textAlign: "center",
   },
-  logo: {
-    alignItems: "center",
-    marginBottom: 40,
-  },
-
   input: {
     width: 300,
     backgroundColor: Colors.primary,
     borderRadius: 25,
     padding: 16,
     fontSize: 16,
-    marginVertical: 10,
   },
+  marginVertical: 10,
   inputContainer: {
     borderBottomWidth: 2,
     borderColor: Colors.primary,

@@ -7,6 +7,7 @@ const Stack = createNativeStackNavigator();
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import WelomeScreen from "../screens/WelomeScreen";
+import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
 function AuthNavigator() {
   return (
     <NavigationContainer>
@@ -24,6 +25,11 @@ function AuthNavigator() {
         <Stack.Screen
           name="Register"
           component={RegisterScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Forgot"
+          component={ForgotPasswordScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

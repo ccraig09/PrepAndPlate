@@ -11,6 +11,7 @@ const CustomButton = ({
   iconSize,
   iconColor,
   onPress,
+  containerStyle,
 }) => {
   return (
     <Button
@@ -35,11 +36,13 @@ const CustomButton = ({
         borderRadius: 5,
         paddingVertical: 10,
       }}
-      containerStyle={{
-        width: "85%",
-        marginHorizontal: 50,
-        marginVertical: 10,
-      }}
+      containerStyle={[
+        {
+          width: "85%",
+          marginVertical: 10,
+        },
+        containerStyle,
+      ]}
     />
   );
 };
