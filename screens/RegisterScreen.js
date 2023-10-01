@@ -17,9 +17,9 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { Input } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
-
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as authAction from "../redux/actions/authAction";
 import Colors from "../constants/Colors";
 import CustomButton from "../components/CustomButton";
 
@@ -49,6 +49,7 @@ const screenWidth = Dimensions.get("window").width;
 
 const RegisterScreen = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   return (
     <KeyboardAvoidingView
@@ -76,11 +77,12 @@ const RegisterScreen = () => {
                 .then(async (result) => {
                   if (result.success) {
                     try {
+                      dispatch(authAction.addToken(result.token));
                       await AsyncStorage.setItem("token", result.token);
                     } catch (err) {
                       console.log(err);
                     }
-                    navData.navigation.navigate("Home");
+                    navigation.navigate("Home");
                   } else {
                     Alert.alert("Registration Failed. Try Again");
                   }
@@ -141,7 +143,7 @@ const RegisterScreen = () => {
                     name: "lock-outline",
                   }}
                   secureTextEntry={true}
-                  onChangeText={handleChange("email")}
+                  onChangeText={handleChange("password")}
                   value={values.password}
                   onBlur={handleBlur("password")}
                   inputContainerStyle={styles.inputContainer}

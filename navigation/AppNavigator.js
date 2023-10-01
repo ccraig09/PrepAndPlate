@@ -11,6 +11,7 @@ import HomeScreen from "../screens/HomeScreen";
 import MealDetailsScreen from "../screens/MealDetailsScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import SearchScreen from "../screens/SearchScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 // import RegisterScreen from "../screens/RegisterScreen";
 
 function HomeStack() {
@@ -49,6 +50,17 @@ function SearchStack() {
     </Stack.Navigator>
   );
 }
+function SettingsStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="SettingsScreen"
+        component={SettingsScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
 
 function AppNavigator() {
   return (
@@ -63,6 +75,8 @@ function AppNavigator() {
               iconName = "star";
             } else if (route.name === "Search") {
               iconName = "search";
+            } else if (route.name === "Settings") {
+              iconName = "settings";
             }
             return <MaterialIcons name={iconName} size={24} />;
           },
@@ -72,6 +86,7 @@ function AppNavigator() {
         <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Search" component={SearchStack} />
         <Tab.Screen name="Favorites" component={FavoritesStack} />
+        <Tab.Screen name="Settings" component={SettingsStack} />
       </Tab.Navigator>
     </NavigationContainer>
   );
