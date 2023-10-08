@@ -22,6 +22,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as authAction from "../redux/actions/authAction";
 import Colors from "../constants/Colors";
 import CustomButton from "../components/CustomButton";
+import { storeToken } from "../hooks/useStoreToken";
 
 const formSchema = yup.object({
   firstName: yup
@@ -47,7 +48,7 @@ const formSchema = yup.object({
 });
 const screenWidth = Dimensions.get("window").width;
 
-const RegisterScreen = () => {
+const RegisterScreen = ({ updateAuthState }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
 
@@ -77,14 +78,16 @@ const RegisterScreen = () => {
                 .then(async (result) => {
                   if (result.success) {
                     try {
-                      dispatch(authAction.addToken(result.token));
-                      await AsyncStorage.setItem("token", result.token);
+                      await storeToken(result.token);
+                      updateAuthState(true);
+                      // dispatch(authAction.addToken(result.token));
+                      // await AsyncStorage.setItem("token", result.token);
                     } catch (err) {
                       console.log(err);
                     }
-                    navigation.navigate("Home");
+                    // navigation.navigate("Home");
                   } else {
-                    Alert.alert("Registration Failed. Try Again");
+                    Alert.alert(`Sign up Failed. ${result.message}`);
                   }
                 })
                 .catch((err) => console.log(err));

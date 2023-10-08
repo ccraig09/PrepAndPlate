@@ -18,9 +18,12 @@ import * as yup from "yup";
 import { Input } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as authAction from "../redux/actions/authAction";
+
 import { useNavigation } from "@react-navigation/native";
 import Colors from "../constants/Colors";
 import CustomButton from "../components/CustomButton";
+import { storeToken } from "../hooks/useStoreToken";
 
 const formSchema = yup.object({
   email: yup
@@ -36,7 +39,10 @@ const formSchema = yup.object({
 });
 
 const screenWidth = Dimensions.get("window").width;
-const LoginScreen = () => {
+
+const LoginScreen = ({ updateAuthState }) => {
+  const dispatch = useDispatch();
+
   const navigation = useNavigation();
 
   return (
@@ -61,17 +67,17 @@ const LoginScreen = () => {
             }}
             validationSchema={formSchema}
             onSubmit={(values) => {
-              dispatch(authAction.registerUser(values))
+              dispatch(authAction.loginUser(values))
                 .then(async (result) => {
                   if (result.success) {
                     try {
-                      await AsyncStorage.setItem("token", result.token);
+                      await storeToken(result.token);
+                      updateAuthState(true);
                     } catch (err) {
                       console.log(err);
                     }
-                    navData.navigation.navigate("Home");
                   } else {
-                    Alert.alert("Registration Failed. Try Again");
+                    Alert.alert(`Sign in Failed. ${result.message}`);
                   }
                 })
                 .catch((err) => console.log(err));
@@ -108,7 +114,7 @@ const LoginScreen = () => {
                     name: "lock-outline",
                   }}
                   secureTextEntry={true}
-                  onChangeText={handleChange("email")}
+                  onChangeText={handleChange("password")}
                   value={values.password}
                   onBlur={handleBlur("password")}
                   inputContainerStyle={styles.inputContainer}

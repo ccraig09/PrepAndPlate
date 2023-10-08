@@ -50,19 +50,19 @@ function SearchStack() {
     </Stack.Navigator>
   );
 }
-function SettingsStack() {
+function SettingsStack({ updateAuthState }) {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="SettingsScreen"
-        component={SettingsScreen}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="SettingsScreen" options={{ headerShown: false }}>
+        {(screenProps) => (
+          <SettingsScreen {...screenProps} updateAuthState={updateAuthState} />
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }
 
-function AppNavigator() {
+function AppNavigator(props) {
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -86,7 +86,14 @@ function AppNavigator() {
         <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Search" component={SearchStack} />
         <Tab.Screen name="Favorites" component={FavoritesStack} />
-        <Tab.Screen name="Settings" component={SettingsStack} />
+        <Tab.Screen name="Settings">
+          {(screenProps) => (
+            <SettingsStack
+              {...screenProps}
+              updateAuthState={props.updateAuthState}
+            />
+          )}
+        </Tab.Screen>
       </Tab.Navigator>
     </NavigationContainer>
   );

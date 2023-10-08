@@ -8,7 +8,7 @@ import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import WelomeScreen from "../screens/WelomeScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
-function AuthNavigator() {
+function AuthNavigator(props) {
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -17,16 +17,22 @@ function AuthNavigator() {
           component={WelomeScreen}
           options={{ headerShown: false }}
         />
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-        <Stack.Screen
-          name="Register"
-          component={RegisterScreen}
-          options={{ headerShown: false }}
-        />
+        <Stack.Screen name="Login" options={{ headerShown: false }}>
+          {(screenProps) => (
+            <LoginScreen
+              {...screenProps}
+              updateAuthState={props.updateAuthState}
+            />
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="Register" options={{ headerShown: false }}>
+          {(screenProps) => (
+            <RegisterScreen
+              {...screenProps}
+              updateAuthState={props.updateAuthState}
+            />
+          )}
+        </Stack.Screen>
         <Stack.Screen
           name="Forgot"
           component={ForgotPasswordScreen}
