@@ -12,10 +12,11 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
-import React from "react";
-import { Formik } from "formik";
+import React, { useState, useEffect } from "react";
+import * as SecureStore from "expo-secure-store";
+import { useFormik } from "formik";
 import * as yup from "yup";
-import { Input } from "@rneui/themed";
+import { Input, CheckBox } from "@rneui/themed";
 import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as authAction from "../redux/actions/authAction";
@@ -24,6 +25,11 @@ import { useNavigation } from "@react-navigation/native";
 import Colors from "../constants/Colors";
 import CustomButton from "../components/CustomButton";
 import { storeToken } from "../hooks/useStoreToken";
+import {
+  storeCredentials,
+  getStoredCredentials,
+  deleteStoredCredentials,
+} from "../Utils/rememberMeUtility";
 
 const formSchema = yup.object({
   email: yup
@@ -36,14 +42,77 @@ const formSchema = yup.object({
     .label("Password")
     .required("Password is required")
     .min(6, "Password must have at least 6 characters"),
+  rememberMe: yup.boolean(),
 });
 
 const screenWidth = Dimensions.get("window").width;
 
 const LoginScreen = ({ updateAuthState }) => {
   const dispatch = useDispatch();
-
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+      rememberMe: false,
+    },
+    validationSchema: formSchema,
+    onSubmit: (values) => {
+      loginUser(values);
+    },
+  });
+
+  useEffect(() => {
+    // Check if there are stored credentials and populate the email field
+    console.log(">>>storing", formik.values.rememberMe);
+    getStoredCredentials()
+      .then((storedCredentials) => {
+        if (storedCredentials) {
+          formik.setValues({
+            ...formik.values,
+            email: storedCredentials.email,
+            password: storedCredentials.password,
+            rememberMe: true,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error retrieving stored credentials:", error);
+      });
+  }, []);
+
+  const loginUser = async (authData) => {
+    const { email, password, rememberMe } = authData;
+    setIsLoading(true);
+    try {
+      if (rememberMe) {
+        // Store credentials when "Remember Me" is enabled
+        await storeCredentials(email, password);
+      } else {
+        // Delete stored credentials when "Remember Me" is disabled
+        await deleteStoredCredentials();
+      }
+      dispatch(authAction.loginUser(authData)).then(async (result) => {
+        if (result.success) {
+          try {
+            await storeToken(result.token);
+            updateAuthState(true);
+          } catch (err) {
+            console.log(err);
+          }
+        } else {
+          Alert.alert(`Sign in Failed. ${result.message}`);
+        }
+      });
+    } catch (error) {
+      console.log("❌ Error signing in...", error);
+      Alert.alert(`Login Failed. ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -58,92 +127,68 @@ const LoginScreen = ({ updateAuthState }) => {
         />
         <Text style={styles.text}>Sign In</Text>
         <View style={styles.box}>
-          <Formik
-            initialValues={{
-              firstName: "",
-              lastName: "",
-              email: "",
-              password: "",
-            }}
-            validationSchema={formSchema}
-            onSubmit={(values) => {
-              dispatch(authAction.loginUser(values))
-                .then(async (result) => {
-                  if (result.success) {
-                    try {
-                      await storeToken(result.token);
-                      updateAuthState(true);
-                    } catch (err) {
-                      console.log(err);
-                    }
-                  } else {
-                    Alert.alert(`Sign in Failed. ${result.message}`);
-                  }
-                })
-                .catch((err) => console.log(err));
-            }}
-          >
-            {({
-              handleChange,
-              handleBlur,
-              handleSubmit,
-              values,
-              errors,
-              touched,
-            }) => (
-              <View style={{ alignItems: "center" }}>
-                <Input
-                  label={"Emal"}
-                  placeholder="Enter your email"
-                  leftIcon={{
-                    type: "font-awesome",
-                    name: "envelope-o",
-                  }}
-                  onChangeText={handleChange("email")}
-                  value={values.email}
-                  onBlur={handleBlur("email")}
-                  inputContainerStyle={styles.inputContainer}
-                  errorMessage={touched.email && errors.email}
-                  containerStyle={styles.inputComponent}
-                />
-                <Input
-                  label={"Password"}
-                  placeholder="Password"
-                  leftIcon={{
-                    type: "MaterialIcons",
-                    name: "lock-outline",
-                  }}
-                  secureTextEntry={true}
-                  onChangeText={handleChange("password")}
-                  value={values.password}
-                  onBlur={handleBlur("password")}
-                  inputContainerStyle={styles.inputContainer}
-                  errorMessage={touched.password && errors.password}
-                  containerStyle={styles.inputComponent}
-                />
+          <View style={{ alignItems: "center" }}>
+            <Input
+              label={"Emal"}
+              placeholder="Enter your email"
+              leftIcon={{
+                type: "font-awesome",
+                name: "envelope-o",
+              }}
+              onChangeText={formik.handleChange("email")}
+              value={formik.values.email}
+              onBlur={formik.handleBlur("email")}
+              inputContainerStyle={styles.inputContainer}
+              errorMessage={formik.touched.email && formik.errors.email}
+              containerStyle={styles.inputComponent}
+            />
+            <Input
+              label={"Password"}
+              placeholder="Password"
+              leftIcon={{
+                type: "MaterialIcons",
+                name: "lock-outline",
+              }}
+              secureTextEntry={true}
+              onChangeText={formik.handleChange("password")}
+              value={formik.values.password}
+              onBlur={formik.handleBlur("password")}
+              inputContainerStyle={styles.inputContainer}
+              errorMessage={formik.touched.password && formik.errors.password}
+              containerStyle={styles.inputComponent}
+            />
 
-                <CustomButton
-                  title={"Sign in"}
-                  backgroundColor={Colors.primary}
-                  textColor={"white"}
-                  onPress={handleSubmit}
-                  containerStyle={{ width: screenWidth * 0.8 }}
-                />
-                <TouchableOpacity onPress={() => navigation.navigate("Forgot")}>
-                  <Text style={styles.forgotButton}>Forgot Password?</Text>
-                </TouchableOpacity>
+            <CheckBox
+              title="Remember me"
+              checkedColor={Colors.primary}
+              uncheckedColor={Colors.primary}
+              containerStyle={{ alignSelf: "flex-start" }}
+              checked={formik.values.rememberMe}
+              onPress={() =>
+                formik.setFieldValue("rememberMe", !formik.values.rememberMe)
+              }
+            />
 
-                <View style={styles.registerContainer}>
-                  <Text style={styles.registerText}>Dont have account? </Text>
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate("Register")}
-                  >
-                    <Text style={styles.registerButton}>Sign up</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
-            )}
-          </Formik>
+            <CustomButton
+              title={"Sign in"}
+              backgroundColor={Colors.primary}
+              textColor={"white"}
+              loading={isLoading}
+              disabled={isLoading}
+              onPress={formik.handleSubmit}
+              containerStyle={{ width: screenWidth * 0.8 }}
+            />
+            <TouchableOpacity onPress={() => navigation.navigate("Forgot")}>
+              <Text style={styles.forgotButton}>Forgot Password?</Text>
+            </TouchableOpacity>
+
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>Dont have account? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+                <Text style={styles.registerButton}>Sign up</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </SafeAreaView>
     </KeyboardAvoidingView>

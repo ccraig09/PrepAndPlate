@@ -12,12 +12,13 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { Input } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch } from "react-redux";
+import { Auth } from "aws-amplify";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as authAction from "../redux/actions/authAction";
 import Colors from "../constants/Colors";
@@ -25,16 +26,16 @@ import CustomButton from "../components/CustomButton";
 import { storeToken } from "../hooks/useStoreToken";
 
 const formSchema = yup.object({
-  firstName: yup
-    .string()
-    .label("First Name")
-    .required("First name is required")
-    .min(3),
-  lastName: yup
-    .string()
-    .label("Last Name")
-    .required("Last name is required")
-    .min(3),
+  // firstName: yup
+  //   .string()
+  //   .label("First Name")
+  //   .required("First name is required")
+  //   .min(3),
+  // lastName: yup
+  //   .string()
+  //   .label("Last Name")
+  //   .required("Last name is required")
+  //   .min(3),
   email: yup
     .string()
     .label("Email")
@@ -51,7 +52,33 @@ const screenWidth = Dimensions.get("window").width;
 const RegisterScreen = ({ updateAuthState }) => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
-  const [isLoading, setIsLoading] = React.useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const signUpUser = async (authData) => {
+    const { email, password } = authData;
+    let username = email;
+    try {
+      setIsLoading(true);
+      await Auth.signUp({
+        username,
+        password,
+        attributes: { email },
+        autoSignIn: {
+          enabled: true,
+        },
+      });
+
+      dispatch(authAction.signUpSuccess());
+
+      console.log("✅ Sign-up Confirmed");
+      await updateAuthState("loggedIn");
+    } catch (error) {
+      console.log("❌ Error signing up...", error);
+      Alert.alert(`Registration Failed. ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -68,14 +95,14 @@ const RegisterScreen = ({ updateAuthState }) => {
         <View style={styles.box}>
           <Formik
             initialValues={{
-              firstName: "",
-              lastName: "",
+              // firstName: "",
+              // lastName: "",
               email: "",
               password: "",
             }}
             validationSchema={formSchema}
             onSubmit={(values) => {
-              setIsLoading(true);
+<<<<<<< HEAD:screens/RegisterScreen.js
               dispatch(authAction.registerUser(values))
                 .then(async (result) => {
                   if (result.success) {
@@ -87,14 +114,15 @@ const RegisterScreen = ({ updateAuthState }) => {
                     } catch (err) {
                       console.log(err);
                     }
-
                     // navigation.navigate("Home");
                   } else {
                     Alert.alert(`Sign up Failed. ${result.message}`);
                   }
-                  setIsLoading(false);
                 })
                 .catch((err) => console.log(err));
+=======
+              signUpUser(values);
+>>>>>>> de3edfb6a2e47ee97e3b9b9d74f287c1288ddc03:screens/SignUpScreen.js
             }}
           >
             {({
@@ -106,7 +134,7 @@ const RegisterScreen = ({ updateAuthState }) => {
               touched,
             }) => (
               <View style={{ alignItems: "center" }}>
-                <Input
+                {/* <Input
                   label={"First Name"}
                   placeholder="Enter your first name"
                   leftIcon={{ type: "font-awesome", name: "user-o" }}
@@ -127,7 +155,7 @@ const RegisterScreen = ({ updateAuthState }) => {
                   inputContainerStyle={styles.inputContainer}
                   errorMessage={touched.lastName && errors.lastName}
                   containerStyle={styles.inputComponent}
-                />
+                /> */}
                 <Input
                   label={"Emal"}
                   placeholder="Enter your email"
@@ -159,7 +187,7 @@ const RegisterScreen = ({ updateAuthState }) => {
                 />
 
                 <CustomButton
-                  title={"Register"}
+                  title={"Sign up"}
                   backgroundColor={Colors.primary}
                   loading={isLoading}
                   disabled={isLoading}

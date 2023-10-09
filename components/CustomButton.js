@@ -11,12 +11,15 @@ const CustomButton = ({
   iconSize,
   iconColor,
   onPress,
+  disabled,
   containerStyle,
 }) => {
   return (
     <Button
       onPress={onPress}
       title={title}
+      disabled={disabled}
+      disabledStyle={{ backgroundColor: backgroundColor }}
       loading={loading}
       icon={{
         name: iconName,
@@ -26,7 +29,7 @@ const CustomButton = ({
       }}
       loadingProps={{
         size: "small",
-        color: "rgba(111, 202, 186, 1)",
+        color: "white",
       }}
       titleStyle={{ fontWeight: "700", color: textColor }}
       buttonStyle={{
