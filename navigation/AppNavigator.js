@@ -11,6 +11,7 @@ import HomeScreen from "../screens/HomeScreen";
 import MealDetailsScreen from "../screens/MealDetailsScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import SearchScreen from "../screens/SearchScreen";
+import SettingsScreen from "../screens/SettingsScreen";
 // import RegisterScreen from "../screens/RegisterScreen";
 
 function HomeStack() {
@@ -49,8 +50,19 @@ function SearchStack() {
     </Stack.Navigator>
   );
 }
+function SettingsStack({ updateAuthState }) {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="SettingsScreen" options={{ headerShown: false }}>
+        {(screenProps) => (
+          <SettingsScreen {...screenProps} updateAuthState={updateAuthState} />
+        )}
+      </Stack.Screen>
+    </Stack.Navigator>
+  );
+}
 
-function AppNavigator() {
+function AppNavigator(props) {
   return (
     <NavigationContainer>
       <Tab.Navigator
@@ -63,6 +75,8 @@ function AppNavigator() {
               iconName = "star";
             } else if (route.name === "Search") {
               iconName = "search";
+            } else if (route.name === "Settings") {
+              iconName = "settings";
             }
             return <MaterialIcons name={iconName} size={24} />;
           },
@@ -72,6 +86,14 @@ function AppNavigator() {
         <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Search" component={SearchStack} />
         <Tab.Screen name="Favorites" component={FavoritesStack} />
+        <Tab.Screen name="Settings">
+          {(screenProps) => (
+            <SettingsStack
+              {...screenProps}
+              updateAuthState={props.updateAuthState}
+            />
+          )}
+        </Tab.Screen>
       </Tab.Navigator>
     </NavigationContainer>
   );

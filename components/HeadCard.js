@@ -45,9 +45,9 @@ export default HeadCard;
 
 const styles = StyleSheet.create({
   card: {
-    shadowColor: "black",
-    shadowOpacity: 0.25,
-    shadowOffset: { width: 0, height: 2 },
+    shadowColor: "#000",
+    shadowOpacity: 0.95,
+    shadowOffset: { width: 1, height: 5 },
     shadowRadius: 8,
     borderRadius: 10,
     backgroundColor: "#ffffff",
