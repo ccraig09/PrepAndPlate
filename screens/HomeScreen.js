@@ -8,12 +8,17 @@ import {
   ImageBackground,
 } from "react-native";
 import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+
 import mealPrepData from "../components/DummyData";
+import * as mealAction from "../redux/actions/mealsAction";
 import SectionItem from "../components/SectionItem";
 import CustomHeader from "../components/CustomHeader";
 import { useWeekRelationship } from "../hooks/useWeekRelationship";
 const HomeScreen = () => {
+  const dispatch = useDispatch();
   const [currentWeek, setCurrentWeek] = useState(moment());
+  const { meals } = useSelector((state) => state.meals);
 
   const weekStart = currentWeek.clone().startOf("week");
   const weekEnd = currentWeek.clone().endOf("week");
@@ -37,8 +42,8 @@ const HomeScreen = () => {
   //   }
   // };
 
-  const filteredMealPrepData = mealPrepData.filter((meal) => {
-    const mealDate = moment(meal.date, "YYYY-MM-DD");
+  const filteredMealPrepData = meals.filter((meal) => {
+    const mealDate = moment(meal.createdAt, "YYYY-MM-DD");
     return mealDate.isBetween(weekStart, weekEnd, null, "[]");
   });
 
@@ -57,6 +62,11 @@ const HomeScreen = () => {
         });
       }, 100);
     }
+  }, []);
+
+  useEffect(() => {
+    dispatch(mealAction.loadUserMeals());
+    console.log(">>>meals", meals);
   }, []);
 
   useEffect(() => {

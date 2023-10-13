@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -16,6 +16,19 @@ import { InfoTag } from "../components/InfoTag";
 const MealDetailsScreen = (props) => {
   const { mealId } = props.route.params;
   const layout = useWindowDimensions();
+  const tagValues = [
+    {
+      vegetarian: true,
+      vegan: true,
+      glutenFree: true,
+      dairyFree: true,
+      veryHealthy: true,
+      cheap: true,
+      veryPopular: true,
+      sustainable: true,
+      lowFodmap: true,
+    },
+  ];
 
   const [index, setIndex] = useState(0);
   const [routes] = useState([
@@ -34,6 +47,53 @@ const MealDetailsScreen = (props) => {
   const meal = useSelector((state) =>
     state.meals.searchResults.find((meal) => meal.id == mealId)
   );
+
+  const mealArrays = useSelector((state) => state.meals.searchResults);
+
+  // useEffect(() => {
+  //   const filteredArray = filterArrayWithArray(meal, tagValues, keysToCompare);
+  //   console.log(filteredArray);
+  // }, []);
+
+  // console.log(">>>>>meal", mealArrays);
+  const nutrition = meal.nutrition.nutrients;
+  const calories = nutrition[0].amount.toFixed(0);
+
+  function filterArrayWithArray(mainArray, filterArray, keys) {
+    // console.log(">>>filteredArray", filterArray);
+    return mainArray.filter((mainObj) => {
+      // console.log(">>>>mainObj", mainObj);
+      return filterArray.some((filterObj) => {
+        // console.log(">>>>filterObj", filterObj);
+        // console.log(
+        //   ">>>>keys",
+        //   keys.every((key) => {
+        //     mainArray[key] === filterArray[key];
+        //   })
+        // );
+      });
+    });
+  }
+
+  const keysToCompare = [
+    "vegetarian",
+    "vegan",
+    "glutenFree",
+    "dairyFree",
+    "veryHealthy",
+    "cheap",
+    "veryPopular",
+    "sustainable",
+    "lowFodmap",
+  ];
+
+  const filteredArray = filterArrayWithArray(
+    mealArrays,
+    tagValues,
+    keysToCompare
+  );
+  // console.log(">>>filter array", filteredArray);
+
   const FirstRoute = () => (
     <WebView
       textZoom={30}
@@ -62,23 +122,20 @@ const MealDetailsScreen = (props) => {
   // console.log(">>>>Meal Detail", meal.analyzedInstructions[0].steps);
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.heading}>
-        <Text style={styles.title}>{meal.title}</Text>
-      </View>
       <View>
         <Image source={{ uri: meal.image }} style={styles.image} />
       </View>
+      <View style={styles.heading}>
+        <Text style={styles.title}>{meal.title}</Text>
+      </View>
+      <View style={styles.infoBar}>
+        <Text style={styles.infoBarText}>
+          {meal.readyInMinutes} min {"\u2022"} {calories} calories
+        </Text>
+      </View>
       <View style={styles.infoTagContainer}>
-        <InfoTag
-          name={"person"}
-          color={"black"}
-          text={`Serves ${meal.servings}`}
-        />
-        <InfoTag
-          name={"time"}
-          color={"black"}
-          text={`Ready in ${meal.readyInMinutes} minutes`}
-        />
+        <InfoTag text={`Serves ${meal.servings}`} />
+        <InfoTag text={`Ready in ${meal.readyInMinutes} minutes`} />
       </View>
 
       {/* <View style={styles.group}>
@@ -113,11 +170,18 @@ export default MealDetailsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 20,
+    backgroundColor: "#fff",
   },
   heading: {
     marginHorizontal: 20,
     marginBottom: 10,
+  },
+  infoBar: {
+    marginHorizontal: 20,
+  },
+  infoBarText: {
+    fontSize: 16,
+    color: "gray",
   },
   title: {
     fontWeight: "bold",
