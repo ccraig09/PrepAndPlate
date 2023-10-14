@@ -3,10 +3,18 @@ import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
 export const InfoTag = ({ name, color, text }) => {
+  function camelCaseToNormalText(text) {
+    return text
+      .replace(/([a-z])([A-Z])/g, "$1 $2")
+      .replace(/^./, (str) => str.toUpperCase());
+  }
+
+  const normalText = camelCaseToNormalText(text);
+
   return (
     <View style={styles.container}>
       <View style={styles.contentRow}>
-        <Text style={styles.text}>{text}</Text>
+        <Text style={styles.text}>{normalText}</Text>
       </View>
     </View>
   );
@@ -14,28 +22,22 @@ export const InfoTag = ({ name, color, text }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: 20,
-    marginLeft: 10,
+    marginTop: 10,
     backgroundColor: "#dcdcde",
     borderRadius: 30,
     alignSelf: "center",
+    elevation: 2,
     shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.27,
-    shadowRadius: 4.65,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
   },
   contentRow: {
-    flexDirection: "row",
     padding: 10,
     justifyContent: "center",
     alignItems: "center",
   },
   text: {
-    marginLeft: 10,
     fontSize: 18,
   },
 });

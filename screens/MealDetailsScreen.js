@@ -15,66 +15,16 @@ import { InfoTag } from "../components/InfoTag";
 
 const MealDetailsScreen = (props) => {
   const { mealId } = props.route.params;
-  const layout = useWindowDimensions();
-  const tagValues = [
-    {
-      vegetarian: true,
-      vegan: true,
-      glutenFree: true,
-      dairyFree: true,
-      veryHealthy: true,
-      cheap: true,
-      veryPopular: true,
-      sustainable: true,
-      lowFodmap: true,
-    },
-  ];
-
+  const meal = useSelector((state) =>
+    state.meals.searchResults.find((meal) => meal.id == mealId)
+  );
   const [index, setIndex] = useState(0);
+  const [trueTagValues, setTrueTagValues] = useState({});
   const [routes] = useState([
     { key: "first", title: "Instructions" },
     { key: "second", title: "Ingredients" },
   ]);
-
-  const renderTabBar = (props) => (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: "white" }}
-      style={{ backgroundColor: "green" }}
-    />
-  );
-
-  const meal = useSelector((state) =>
-    state.meals.searchResults.find((meal) => meal.id == mealId)
-  );
-
-  const mealArrays = useSelector((state) => state.meals.searchResults);
-
-  // useEffect(() => {
-  //   const filteredArray = filterArrayWithArray(meal, tagValues, keysToCompare);
-  //   console.log(filteredArray);
-  // }, []);
-
-  // console.log(">>>>>meal", mealArrays);
-  const nutrition = meal.nutrition.nutrients;
-  const calories = nutrition[0].amount.toFixed(0);
-
-  function filterArrayWithArray(mainArray, filterArray, keys) {
-    // console.log(">>>filteredArray", filterArray);
-    return mainArray.filter((mainObj) => {
-      // console.log(">>>>mainObj", mainObj);
-      return filterArray.some((filterObj) => {
-        // console.log(">>>>filterObj", filterObj);
-        // console.log(
-        //   ">>>>keys",
-        //   keys.every((key) => {
-        //     mainArray[key] === filterArray[key];
-        //   })
-        // );
-      });
-    });
-  }
-
+  const layout = useWindowDimensions();
   const keysToCompare = [
     "vegetarian",
     "vegan",
@@ -86,13 +36,41 @@ const MealDetailsScreen = (props) => {
     "sustainable",
     "lowFodmap",
   ];
+  const matchingValues = {};
+  const matchingObject = meal;
 
-  const filteredArray = filterArrayWithArray(
-    mealArrays,
-    tagValues,
-    keysToCompare
+  const nutrition = meal.nutrition.nutrients;
+  const calories = nutrition[0].amount.toFixed(0);
+
+  useEffect(() => {
+    keysToCompare.forEach((key) => {
+      if (matchingObject[key] === true) {
+        matchingValues[key] = true;
+      }
+    });
+    setTrueTagValues(matchingValues);
+    console.log(">>>>>matchingValues", matchingValues);
+  }, []);
+
+  const Tags = () => {
+    return (
+      <View style={styles.infoTagContainer}>
+        {Object.keys(trueTagValues).map((key) => (
+          <>
+            <InfoTag text={key} key={key} />
+          </>
+        ))}
+      </View>
+    );
+  };
+
+  const renderTabBar = (props) => (
+    <TabBar
+      {...props}
+      indicatorStyle={{ backgroundColor: "white" }}
+      style={{ backgroundColor: "green" }}
+    />
   );
-  // console.log(">>>filter array", filteredArray);
 
   const FirstRoute = () => (
     <WebView
@@ -133,27 +111,8 @@ const MealDetailsScreen = (props) => {
           {meal.readyInMinutes} min {"\u2022"} {calories} calories
         </Text>
       </View>
-      <View style={styles.infoTagContainer}>
-        <InfoTag text={`Serves ${meal.servings}`} />
-        <InfoTag text={`Ready in ${meal.readyInMinutes} minutes`} />
-      </View>
+      <Tags />
 
-      {/* <View style={styles.group}>
-				<Text style={styles.label}>Home Type: </Text>
-				<Text style={styles.value}>{meal.homeType} </Text>
-			</View>
-			<View style={styles.group}>
-				<Text style={styles.label}>Price: </Text>
-				<Text style={styles.value}>${meal.price} </Text>
-			</View>
-			<View style={styles.group}>
-				<Text style={styles.label}>Year Built: </Text>
-				<Text style={styles.value}>{meal.yearBuilt} </Text>
-			</View>
-			<View style={styles.group}>
-				<Text style={styles.label}>Address: </Text>
-				<Text style={styles.value}>{meal.address}</Text>
-			</View>*/}
       <TabView
         renderTabBar={renderTabBar}
         navigationState={{ index, routes }}
@@ -193,9 +152,11 @@ const styles = StyleSheet.create({
   },
 
   infoTagContainer: {
+    width: "100%",
+    flexWrap: "wrap",
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginHorizontal: 20,
+    justifyContent: "space-evenly",
+    // marginHorizontal: 20,
     marginVertical: 10,
   },
   instructions: {

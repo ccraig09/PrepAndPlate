@@ -36,7 +36,7 @@ export function loadUserMeals() {
 export function searchMeals(searchWord) {
   return async (dispatch) => {
     const result = await fetch(
-      `${BASE_URL}/recipes/complexSearch?apiKey=${SecureStoreKeys.API_KEY}&number=10&query=${searchWord}&instructionsRequired=true&addRecipeNutrition=true&includeNutrition=true`
+      `${BASE_URL}/recipes/complexSearch?apiKey=${SecureStoreKeys.API_KEY}&number=5&query=${searchWord}&instructionsRequired=true&addRecipeNutrition=true&includeNutrition=true`
     );
 
     const resultJson = await result.json();
