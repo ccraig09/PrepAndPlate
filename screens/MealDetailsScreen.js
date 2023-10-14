@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Image,
   StyleSheet,
@@ -15,13 +15,54 @@ import { InfoTag } from "../components/InfoTag";
 
 const MealDetailsScreen = (props) => {
   const { mealId } = props.route.params;
-  const layout = useWindowDimensions();
-
+  const meal = useSelector((state) =>
+    state.meals.searchResults.find((meal) => meal.id == mealId)
+  );
   const [index, setIndex] = useState(0);
+  const [trueTagValues, setTrueTagValues] = useState({});
   const [routes] = useState([
     { key: "first", title: "Instructions" },
     { key: "second", title: "Ingredients" },
   ]);
+  const layout = useWindowDimensions();
+  const keysToCompare = [
+    "vegetarian",
+    "vegan",
+    "glutenFree",
+    "dairyFree",
+    "veryHealthy",
+    "cheap",
+    "veryPopular",
+    "sustainable",
+    "lowFodmap",
+  ];
+  const matchingValues = {};
+  const matchingObject = meal;
+
+  const nutrition = meal.nutrition.nutrients;
+  const calories = nutrition[0].amount.toFixed(0);
+
+  useEffect(() => {
+    keysToCompare.forEach((key) => {
+      if (matchingObject[key] === true) {
+        matchingValues[key] = true;
+      }
+    });
+    setTrueTagValues(matchingValues);
+    console.log(">>>>>matchingValues", matchingValues);
+  }, []);
+
+  const Tags = () => {
+    return (
+      <View style={styles.infoTagContainer}>
+        {Object.keys(trueTagValues).map((key) => (
+          <>
+            <InfoTag text={key} key={key} />
+          </>
+        ))}
+      </View>
+    );
+  };
 
   const renderTabBar = (props) => (
     <TabBar
@@ -31,9 +72,6 @@ const MealDetailsScreen = (props) => {
     />
   );
 
-  const meal = useSelector((state) =>
-    state.meals.searchResults.find((meal) => meal.id == mealId)
-  );
   const FirstRoute = () => (
     <WebView
       textZoom={30}
@@ -62,41 +100,19 @@ const MealDetailsScreen = (props) => {
   // console.log(">>>>Meal Detail", meal.analyzedInstructions[0].steps);
   return (
     <ScrollView style={styles.container}>
-      <View style={styles.heading}>
-        <Text style={styles.title}>{meal.title}</Text>
-      </View>
       <View>
         <Image source={{ uri: meal.image }} style={styles.image} />
       </View>
-      <View style={styles.infoTagContainer}>
-        <InfoTag
-          name={"person"}
-          color={"black"}
-          text={`Serves ${meal.servings}`}
-        />
-        <InfoTag
-          name={"time"}
-          color={"black"}
-          text={`Ready in ${meal.readyInMinutes} minutes`}
-        />
+      <View style={styles.heading}>
+        <Text style={styles.title}>{meal.title}</Text>
       </View>
+      <View style={styles.infoBar}>
+        <Text style={styles.infoBarText}>
+          {meal.readyInMinutes} min {"\u2022"} {calories} calories
+        </Text>
+      </View>
+      <Tags />
 
-      {/* <View style={styles.group}>
-				<Text style={styles.label}>Home Type: </Text>
-				<Text style={styles.value}>{meal.homeType} </Text>
-			</View>
-			<View style={styles.group}>
-				<Text style={styles.label}>Price: </Text>
-				<Text style={styles.value}>${meal.price} </Text>
-			</View>
-			<View style={styles.group}>
-				<Text style={styles.label}>Year Built: </Text>
-				<Text style={styles.value}>{meal.yearBuilt} </Text>
-			</View>
-			<View style={styles.group}>
-				<Text style={styles.label}>Address: </Text>
-				<Text style={styles.value}>{meal.address}</Text>
-			</View>*/}
       <TabView
         renderTabBar={renderTabBar}
         navigationState={{ index, routes }}
@@ -113,11 +129,18 @@ export default MealDetailsScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginVertical: 20,
+    backgroundColor: "#fff",
   },
   heading: {
     marginHorizontal: 20,
     marginBottom: 10,
+  },
+  infoBar: {
+    marginHorizontal: 20,
+  },
+  infoBarText: {
+    fontSize: 16,
+    color: "gray",
   },
   title: {
     fontWeight: "bold",
@@ -129,9 +152,11 @@ const styles = StyleSheet.create({
   },
 
   infoTagContainer: {
+    width: "100%",
+    flexWrap: "wrap",
     flexDirection: "row",
-    justifyContent: "space-around",
-    marginHorizontal: 20,
+    justifyContent: "space-evenly",
+    // marginHorizontal: 20,
     marginVertical: 10,
   },
   instructions: {

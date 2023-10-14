@@ -1,4 +1,8 @@
-import { LOAD_MEALS, SEARCH_MEALS } from "../actions/mealsAction";
+import {
+  LOAD_MEALS,
+  SEARCH_MEALS,
+  LOAD_USER_MEALS,
+} from "../actions/mealsAction";
 
 const initialState = {
   meals: [],
@@ -8,6 +12,11 @@ const initialState = {
 export default function (state = initialState, action) {
   switch (action.type) {
     case LOAD_MEALS:
+      return {
+        ...state,
+        meals: action.payload,
+      };
+    case LOAD_USER_MEALS:
       return {
         ...state,
         meals: action.payload,

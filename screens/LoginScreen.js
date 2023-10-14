@@ -60,6 +60,7 @@ const LoginScreen = ({ updateAuthState }) => {
     },
     validationSchema: formSchema,
     onSubmit: (values) => {
+      setIsLoading(true);
       loginUser(values);
     },
   });
@@ -85,7 +86,6 @@ const LoginScreen = ({ updateAuthState }) => {
 
   const loginUser = async (authData) => {
     const { email, password, rememberMe } = authData;
-    setIsLoading(true);
     try {
       if (rememberMe) {
         // Store credentials when "Remember Me" is enabled
