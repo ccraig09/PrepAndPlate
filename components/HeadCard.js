@@ -13,7 +13,7 @@ const HeadCard = (props) => {
 
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Details", { mealId: props.id })}
+      onPress={() => navigation.navigate("Details", { meal: props.mealData })}
     >
       <View style={styles.card}>
         <View style={styles.titleContainer}>

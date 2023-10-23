@@ -44,6 +44,7 @@ const List = ({ searchWord, setClicked, data }) => {
               prepTime={item.readyInMinutes}
               healthScore={item.healthScore}
               id={item.id}
+              mealData={item}
             />
           )}
         />

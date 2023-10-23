@@ -9,6 +9,9 @@ import AuthNavigator from "./navigation/AuthNavigator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
 import Colors from "./constants/Colors";
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs(["Animated: `useNativeDriver`"]);
 
 export default function App() {
   const [loggedIn, setLoggedIn] = useState(false);

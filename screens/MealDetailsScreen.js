@@ -4,27 +4,46 @@ import {
   StyleSheet,
   Text,
   View,
+  Alert,
+  ActivityIndicator,
   useWindowDimensions,
 } from "react-native";
 import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { ScrollView } from "react-native-gesture-handler";
 import { useSelector } from "react-redux";
 import { WebView } from "react-native-webview";
+import ActionButton from "react-native-action-button";
+import { FAB, Portal, Provider } from "react-native-paper";
+import Icon from "react-native-vector-icons/Ionicons";
+import { useDispatch } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 
+import Colors from "../constants/Colors";
 import { InfoTag } from "../components/InfoTag";
+import MealScheduleModal from "../components/MealScheduleModal";
+import * as mealAction from "../redux/actions/mealsAction";
+import CategoryTitle from "../components/CategoryTitle";
+import NutritionBar from "./NutritionBar";
 
 const MealDetailsScreen = (props) => {
-  const { mealId } = props.route.params;
-  const meal = useSelector((state) =>
-    state.meals.searchResults.find((meal) => meal.id == mealId)
-  );
+  const { meal } = props.route.params;
+  const navigation = useNavigation();
+
+  // const meal = useSelector((state) =>
+  //   state.meals.searchResults.find((meal) => meal.id == mealId)
+  // );
   const [index, setIndex] = useState(0);
+  const [open, setOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [trueTagValues, setTrueTagValues] = useState({});
   const [routes] = useState([
     { key: "first", title: "Instructions" },
     { key: "second", title: "Ingredients" },
   ]);
+  const [isModalVisible, setModalVisible] = useState(false);
+
   const layout = useWindowDimensions();
+  const dispatch = useDispatch();
   const keysToCompare = [
     "vegetarian",
     "vegan",
@@ -41,6 +60,31 @@ const MealDetailsScreen = (props) => {
 
   const nutrition = meal.nutrition.nutrients;
   const calories = nutrition[0].amount.toFixed(0);
+  const fat = nutrition[1].amount.toFixed(0);
+  const netCarbs = nutrition[4].amount.toFixed(0);
+  const protein = nutrition[8].amount.toFixed(0);
+
+  const handleScheduleMeal = (selectedDate, timeOfDay) => {
+    const mealToSchedule = {
+      mealId: meal.id,
+      title: meal.title,
+      imageUrl: meal.image,
+      mealData: meal,
+      date: selectedDate,
+      timeOfDay: timeOfDay,
+    };
+
+    dispatch(mealAction.addMeal(mealToSchedule))
+      .then(() => {
+        setIsLoading(false);
+        Alert.alert("Created Successfully");
+      })
+      .catch(() => {
+        setIsLoading(false);
+        Alert.alert("An error occured. Try again", [{ text: "OK" }]);
+      });
+    setModalVisible(false);
+  };
 
   useEffect(() => {
     keysToCompare.forEach((key) => {
@@ -55,10 +99,10 @@ const MealDetailsScreen = (props) => {
   const Tags = () => {
     return (
       <View style={styles.infoTagContainer}>
-        {Object.keys(trueTagValues).map((key) => (
-          <>
-            <InfoTag text={key} key={key} />
-          </>
+        {Object.keys(trueTagValues).map((key, index) => (
+          <View key={index}>
+            <InfoTag text={key} />
+          </View>
         ))}
       </View>
     );
@@ -97,30 +141,88 @@ const MealDetailsScreen = (props) => {
     second: SecondRoute,
   });
 
-  // console.log(">>>>Meal Detail", meal.analyzedInstructions[0].steps);
-  return (
-    <ScrollView style={styles.container}>
-      <View>
-        <Image source={{ uri: meal.image }} style={styles.image} />
-      </View>
-      <View style={styles.heading}>
-        <Text style={styles.title}>{meal.title}</Text>
-      </View>
-      <View style={styles.infoBar}>
-        <Text style={styles.infoBarText}>
-          {meal.readyInMinutes} min {"\u2022"} {calories} calories
-        </Text>
-      </View>
-      <Tags />
+  const Divider = () => {
+    return (
+      <View
+        style={{
+          borderBottomColor: "grey",
+          borderBottomWidth: 0.2,
+          marginVertical: 10,
+          marginHorizontal: 16,
+        }}
+      />
+    );
+  };
 
-      <TabView
+  // console.log(">>>>Meal Detail", meal.analyzedInstructions[0].steps);
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+  return (
+    <View style={styles.container}>
+      <ScrollView>
+        <View>
+          <Image source={{ uri: meal.image }} style={styles.image} />
+        </View>
+        <View style={styles.heading}>
+          <Text style={styles.title}>{meal.title}</Text>
+        </View>
+        <View style={styles.infoBar}>
+          <Text style={styles.infoBarText}>
+            {meal.readyInMinutes} min {"\u2022"} {calories} calories
+          </Text>
+        </View>
+        <Tags />
+        <CategoryTitle
+          title={"Nutrition Info"}
+          onPress={() => navigation.navigate("Nutrition", { id: meal.id })}
+        />
+        <NutritionBar protein={protein} fat={fat} netCarbs={netCarbs} />
+        <Divider />
+        <CategoryTitle title={"Ingredients"} />
+        {/* <TabView
         renderTabBar={renderTabBar}
         navigationState={{ index, routes }}
         renderScene={renderScene}
         onIndexChange={setIndex}
         initialLayout={{ width: layout.width }}
+      /> */}
+        <MealScheduleModal
+          visible={isModalVisible}
+          onClose={() => setModalVisible(false)}
+          onSchedule={handleScheduleMeal}
+        />
+      </ScrollView>
+
+      <FAB.Group
+        open={open}
+        icon={open ? "close" : "plus"}
+        color={"white"}
+        fabStyle={{ backgroundColor: Colors.primary }}
+        actions={[
+          {
+            icon: "plus",
+            label: "Add to favorites",
+            color: "white",
+            style: { backgroundColor: Colors.secondary },
+            onPress: () => console.log("Pressed add"),
+          },
+          {
+            icon: "calendar-today",
+            label: "Add to calendar",
+            style: { backgroundColor: Colors.secondary },
+            color: "white",
+            onPress: () => setModalVisible(true),
+          },
+        ]}
+        onStateChange={({ open }) => setOpen(open)}
       />
-    </ScrollView>
+    </View>
   );
 };
 
@@ -133,7 +235,7 @@ const styles = StyleSheet.create({
   },
   heading: {
     marginHorizontal: 20,
-    marginBottom: 10,
+    marginVertical: 10,
   },
   infoBar: {
     marginHorizontal: 20,
@@ -155,6 +257,7 @@ const styles = StyleSheet.create({
     width: "100%",
     flexWrap: "wrap",
     flexDirection: "row",
+    flex: 1,
     justifyContent: "space-evenly",
     // marginHorizontal: 20,
     marginVertical: 10,
@@ -177,5 +280,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     flexShrink: 1,
+  },
+  actionButtonIcon: {
+    fontSize: 20,
+    height: 22,
+    color: "white",
   },
 });

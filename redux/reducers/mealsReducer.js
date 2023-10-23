@@ -2,6 +2,7 @@ import {
   LOAD_MEALS,
   SEARCH_MEALS,
   LOAD_USER_MEALS,
+  ADD_MEAL,
 } from "../actions/mealsAction";
 
 const initialState = {
@@ -20,6 +21,11 @@ export default function (state = initialState, action) {
       return {
         ...state,
         meals: action.payload,
+      };
+    case ADD_MEAL:
+      return {
+        ...state,
+        meals: [...state.meals, action.payload],
       };
     case SEARCH_MEALS:
       return {

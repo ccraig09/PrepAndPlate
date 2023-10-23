@@ -12,6 +12,7 @@ import MealDetailsScreen from "../screens/MealDetailsScreen";
 import FavoritesScreen from "../screens/FavoritesScreen";
 import SearchScreen from "../screens/SearchScreen";
 import SettingsScreen from "../screens/SettingsScreen";
+import NutritionScreen from "../screens/NutritionScreen";
 // import RegisterScreen from "../screens/RegisterScreen";
 
 function HomeStack() {
@@ -23,6 +24,7 @@ function HomeStack() {
         options={{ headerShown: false, headerTitle: "" }}
       />
       <Stack.Screen name="Details" component={MealDetailsScreen} />
+      <Stack.Screen name="Nutrition" component={NutritionScreen} />
     </Stack.Navigator>
   );
 }
@@ -47,6 +49,11 @@ function SearchStack() {
         options={{ headerShown: false }}
       />
       <Stack.Screen name="Details" component={MealDetailsScreen} />
+      <Stack.Screen
+        name="Nutrition"
+        component={NutritionScreen}
+        options={{ headerTitle: "Nutrition Facts" }}
+      />
     </Stack.Navigator>
   );
 }

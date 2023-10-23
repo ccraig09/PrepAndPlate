@@ -3,48 +3,37 @@ import React from "react";
 import Colors from "../constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Rating } from "react-native-ratings";
-const SectionItem = ({ item }) => {
+const SectionItem = ({ item, onPress }) => {
+  console.log("item: ", item.imageUrl);
   return (
-    <TouchableOpacity style={styles.item}>
+    <TouchableOpacity onPress={onPress} style={styles.itemContainer}>
       <View>
-        <Image style={styles.image} source={{ uri: item.image }} />
+        <Image style={styles.image} source={{ uri: item.imageUrl }} />
       </View>
       <View style={styles.details}>
         <Text style={styles.timeOfDay}>{item.timeOfDay}</Text>
         <Text style={styles.title}>{item.title}</Text>
-        <View style={styles.rating}>
-          <Rating
-            type="custom"
-            imageSize={15}
-            ratingCount={5}
-            ratingColor={Colors.primary}
-            readonly
-            startingValue={item.rating}
-            tintColor={"#f7f9f7"}
-          />
-          <View style={styles.caloriesContainer}>
-            <MaterialIcons
-              name="local-fire-department"
-              size={16}
-              color={Colors.primary}
-            />
-            <Text style={styles.calories}>{item.calories} calories</Text>
-          </View>
-        </View>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <View style={styles.servingSizeContainer}>
-            <MaterialIcons name="people-alt" size={16} color={Colors.primary} />
-            <Text style={styles.servingSize}> {item.servingSize}</Text>
-          </View>
+        <View style={styles.itemRow}>
           <View style={styles.prepTimeContainer}>
             <MaterialIcons
               name="access-time"
               size={16}
               color={Colors.primary}
             />
-            <Text style={styles.prepTime}> {item.prepTime}</Text>
+            <Text style={styles.prepTime}>
+              {item.mealData[0].readyInMinutes} min
+            </Text>
+          </View>
+          <View style={styles.servingSizeContainer}>
+            <MaterialIcons name="people-alt" size={16} color={Colors.primary} />
+            <Text style={styles.servingSize}>
+              {item.mealData[0].servings} servings
+            </Text>
           </View>
         </View>
+        <View
+          style={{ flexDirection: "row", justifyContent: "space-between" }}
+        ></View>
       </View>
     </TouchableOpacity>
   );
@@ -53,7 +42,7 @@ const SectionItem = ({ item }) => {
 export default SectionItem;
 
 const styles = StyleSheet.create({
-  item: {
+  itemContainer: {
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#f7f9f7",
@@ -75,6 +64,7 @@ const styles = StyleSheet.create({
   },
   details: {
     marginLeft: 10,
+    flex: 1,
   },
   timeOfDay: {
     fontWeight: "bold",
@@ -85,14 +75,18 @@ const styles = StyleSheet.create({
     marginTop: 5,
     marginBottom: 5,
     fontSize: 18,
+    fontWeight: "bold",
+    color: "black",
   },
-  rating: {
+  itemRow: {
     flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
   },
   calories: {
     fontSize: 14,
     color: Colors.primary,
+    marginLeft: 5,
   },
   caloriesContainer: {
     flexDirection: "row",
@@ -105,15 +99,16 @@ const styles = StyleSheet.create({
   },
   servingSize: {
     fontSize: 14,
-    color: "black",
+    marginLeft: 5,
+    color: Colors.primary,
   },
   prepTime: {
     fontSize: 14,
-    color: "black",
+    marginLeft: 5,
+    color: Colors.primary,
   },
   prepTimeContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginLeft: 10,
   },
 });
