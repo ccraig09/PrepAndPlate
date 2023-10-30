@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
+  ActivityIndicator,
+  RefreshControl,
   Button,
   SectionList,
   StyleSheet,
@@ -9,16 +11,19 @@ import {
 } from "react-native";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 
 import mealPrepData from "../components/DummyData";
 import * as mealAction from "../redux/actions/mealsAction";
 import SectionItem from "../components/SectionItem";
 import CustomHeader from "../components/CustomHeader";
 import { useWeekRelationship } from "../hooks/useWeekRelationship";
+import Colors from "../constants/Colors";
 const HomeScreen = () => {
   const dispatch = useDispatch();
   const [currentWeek, setCurrentWeek] = useState(moment());
-  const { meals } = useSelector((state) => state.meals);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigation = useNavigation();
 
   const weekStart = currentWeek.clone().startOf("week");
   const weekEnd = currentWeek.clone().endOf("week");
@@ -42,12 +47,13 @@ const HomeScreen = () => {
   //   }
   // };
 
-  const filteredMealPrepData = meals.filter((meal) => {
-    const mealDate = moment(meal.createdAt, "YYYY-MM-DD");
-    return mealDate.isBetween(weekStart, weekEnd, null, "[]");
-  });
-
   const formattedCurrentWeek = currentWeek.format("MMMM Do YYYY");
+
+  useFocusEffect(
+    React.useCallback(() => {
+      loadMeals();
+    }, [])
+  );
 
   useEffect(() => {
     const today = moment().format("ddd MMM D");
@@ -64,10 +70,12 @@ const HomeScreen = () => {
     }
   }, []);
 
-  useEffect(() => {
-    dispatch(mealAction.loadUserMeals());
-    console.log(">>>meals", meals);
-  }, []);
+  const { meals } = useSelector((state) => state.meals);
+
+  const filteredMealPrepData = meals.filter((meal) => {
+    const mealDate = moment(meal.createdAt, "YYYY-MM-DD");
+    return mealDate.isBetween(weekStart, weekEnd, null, "[]");
+  });
 
   useEffect(() => {
     sections.sort((a, b) => {
@@ -76,6 +84,11 @@ const HomeScreen = () => {
       return dateA - dateB;
     });
   }, []);
+
+  const loadMeals = () => {
+    setIsLoading(true);
+    dispatch(mealAction.loadUserMeals()).then(() => setIsLoading(false));
+  };
 
   const getItemLayout = (_, index) => {
     return {
@@ -138,6 +151,18 @@ const HomeScreen = () => {
     </View>
   );
 
+  const onPressHandler = (data) => {
+    navigation.navigate("Details", { meal: data });
+  };
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -158,11 +183,21 @@ const HomeScreen = () => {
           </Text>
         ) : ( */}
           <SectionList
+            refreshControl={
+              <RefreshControl refreshing={isLoading} onRefresh={loadMeals} />
+            }
             ref={sectionListRef}
             showsVerticalScrollIndicator={false}
             sections={sections}
             keyExtractor={(item, index) => item + index}
-            renderItem={SectionItem}
+            renderItem={({ item }) => (
+              <SectionItem
+                item={item}
+                onPress={() => {
+                  onPressHandler(item.mealData[0]);
+                }}
+              />
+            )}
             renderSectionHeader={renderSectionHeader}
             ListEmptyComponent={renderEmptySection}
             getItemLayout={getItemLayout}

@@ -23,7 +23,7 @@ export const InfoTag = ({ name, color, text }) => {
 const styles = StyleSheet.create({
   container: {
     marginTop: 10,
-    backgroundColor: "#dcdcde",
+    backgroundColor: "#f4f4f4",
     borderRadius: 30,
     alignSelf: "center",
     elevation: 2,
@@ -39,5 +39,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
+    color: "#7f8082",
+    fontWeight: "bold",
   },
 });

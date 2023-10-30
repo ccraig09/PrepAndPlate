@@ -3,6 +3,7 @@ import { SecureStoreKeys } from "../../constants/secureStore";
 export const LOAD_MEALS = "LOAD_MEALS";
 export const LOAD_USER_MEALS = "LOAD_USER_MEALS";
 export const SEARCH_MEALS = "SEARCH_MEALS";
+export const ADD_MEAL = "ADD_MEAL";
 
 const BASE_URL = `https://api.spoonacular.com`;
 const DATABASE_URL = `http://localhost:3000`;
@@ -25,13 +26,48 @@ export function loadUserMeals() {
 
     const resultJson = await result.json();
 
-    console.log(">>>resultJson", resultJson);
+    // console.log(">>>resultJson", resultJson);
 
     dispatch({ type: LOAD_USER_MEALS, payload: resultJson });
 
     return;
   };
 }
+
+export const addMeal = ({
+  title,
+  timeOfDay,
+  imageUrl,
+  date,
+  mealData,
+  mealId,
+}) => {
+  return async (dispatch) => {
+    console.log(">>>mealData", mealData);
+    const response = await fetch(`${DATABASE_URL}/api/meals`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        timeOfDay,
+        imageUrl,
+        date,
+        mealData,
+        mealId,
+      }),
+    });
+
+    const responseData = await response.json();
+    console.log(">>>responseData", responseData);
+
+    dispatch({
+      type: ADD_MEAL,
+      payload: responseData,
+    });
+  };
+};
 
 export function searchMeals(searchWord) {
   return async (dispatch) => {
@@ -41,6 +77,8 @@ export function searchMeals(searchWord) {
 
     const resultJson = await result.json();
 
-    dispatch({ type: SEARCH_MEALS, payload: resultJson.results });
+    // dispatch({ type: SEARCH_MEALS, payload: resultJson.results });
+
+    return resultJson.results;
   };
 }

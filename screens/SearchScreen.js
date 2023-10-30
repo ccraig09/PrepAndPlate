@@ -14,9 +14,9 @@ import * as mealAction from "../redux/actions/mealsAction";
 
 const SearchScreen = () => {
   const dispatch = useDispatch();
-  const { searchResults } = useSelector((state) => state.meals);
 
   const [searchWord, setSearchWord] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
   const [clicked, setClicked] = useState(false);
   const [fakeData, setFakeData] = useState();
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +36,8 @@ const SearchScreen = () => {
   const onSearch = () => {
     setIsLoading(true);
     dispatch(mealAction.searchMeals(searchWord))
-      .then(() => {
+      .then((res) => {
+        setSearchResults(res);
         setIsLoading(false);
       })
       .catch((e) => {
