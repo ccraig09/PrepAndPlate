@@ -180,7 +180,12 @@ const MealDetailsScreen = (props) => {
         <Tags />
         <CategoryTitle
           title={"Nutrition Info"}
-          onPress={() => navigation.navigate("Nutrition", { id: meal.id })}
+          onPress={() =>
+            navigation.navigate("Nutrition", {
+              nutritionData: nutrition,
+              calories: calories,
+            })
+          }
         />
         <NutritionBar protein={protein} fat={fat} netCarbs={netCarbs} />
         <Divider />
