@@ -6,7 +6,7 @@ export const SEARCH_MEALS = "SEARCH_MEALS";
 export const ADD_MEAL = "ADD_MEAL";
 
 const BASE_URL = `https://api.spoonacular.com`;
-const DATABASE_URL = `http://localhost:3000`;
+const DATABASE_URL = SecureStoreKeys.LOCAL_URL;
 // const BASE_URL = `https://api.spoonacular.com/recipes/random?apiKey=${SecureStoreKeys.API_KEY}&number=1`;
 
 export function loadMeals() {

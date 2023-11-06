@@ -1,5 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from "@react-navigation/native";
+import { SecureStoreKeys } from "../../constants/secureStore";
 
 export const REGISTER_USER_SUCCESS = "REGISTER_USER_SUCCESS";
 export const REGISTER_USER_FAIL = "REGISTER_USER_FAIL";
@@ -9,7 +10,7 @@ export const LOGOUT_USER = "LOGOUT_USER";
 export const ADD_TOKEN = "ADD_TOKEN";
 export const REMOVE_TOKEN = "REMOVE_TOKEN";
 
-const BASE_URL = "http://localhost:3000";
+const BASE_URL = SecureStoreKeys.LOCAL_URL;
 
 // const navigation = useNavigation();
 

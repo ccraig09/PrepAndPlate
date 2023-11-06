@@ -8,13 +8,8 @@ import {
   ActivityIndicator,
   useWindowDimensions,
 } from "react-native";
-import { TabView, SceneMap, TabBar } from "react-native-tab-view";
 import { ScrollView } from "react-native-gesture-handler";
-import { useSelector } from "react-redux";
-import { WebView } from "react-native-webview";
-import ActionButton from "react-native-action-button";
-import { FAB, Portal, Provider } from "react-native-paper";
-import Icon from "react-native-vector-icons/Ionicons";
+import { FAB } from "react-native-paper";
 import { useDispatch } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
@@ -26,24 +21,16 @@ import CategoryTitle from "../components/CategoryTitle";
 import NutritionBar from "./NutritionBar";
 import IngredientsList from "../components/IngredientsList";
 import { useGenerateImageUrl } from "../hooks/useGenerateImageUrl";
+import InstructionSteps from "../components/InstructionSteps";
 
 const MealDetailsScreen = (props) => {
   const { mealId } = props.route.params;
   const navigation = useNavigation();
 
-  // const meal = useSelector((state) =>
-  //   state.meals.searchResults.find((meal) => meal.id == mealId)
-  // );
-
-  const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);
   const [meal, setMeal] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [trueTagValues, setTrueTagValues] = useState({});
-  const [routes] = useState([
-    { key: "first", title: "Instructions" },
-    { key: "second", title: "Ingredients" },
-  ]);
 
   const [isModalVisible, setModalVisible] = useState(false);
 
@@ -99,7 +86,6 @@ const MealDetailsScreen = (props) => {
     try {
       await dispatch(mealAction.getMealById(mealId)).then((res) => {
         setMeal(res);
-        console.log(">>>>>res", res.extendedIngredients);
       });
     } catch (e) {
       console.log(e);
@@ -121,7 +107,7 @@ const MealDetailsScreen = (props) => {
   useEffect(() => {
     loadMeal();
     compareKeys();
-  }, [dispatch, mealId]);
+  }, []);
 
   const Tags = () => {
     return (
@@ -135,39 +121,6 @@ const MealDetailsScreen = (props) => {
     );
   };
 
-  const renderTabBar = (props) => (
-    <TabBar
-      {...props}
-      indicatorStyle={{ backgroundColor: "white" }}
-      style={{ backgroundColor: "green" }}
-    />
-  );
-
-  const FirstRoute = () => (
-    <WebView
-      textZoom={30}
-      style={{ backgroundColor: "#dcdcde" }}
-      containerStyle={{
-        marginTop: 20,
-        flex: 0,
-        height: 200,
-      }}
-      originWhitelist={["*"]}
-      source={{
-        html: `<p style="font-size: 50; line-height: 1.5; "> ${meal.analyzedInstructions[0].steps} </p`,
-      }}
-    />
-  );
-
-  const SecondRoute = () => (
-    <View style={{ flex: 1, backgroundColor: "#673ab7" }} />
-  );
-
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-  });
-
   const Divider = () => {
     return (
       <View
@@ -180,8 +133,6 @@ const MealDetailsScreen = (props) => {
       />
     );
   };
-
-  // console.log(">>>>Meal Detail", meal.analyzedInstructions[0].steps);
 
   if (isLoading) {
     return (
@@ -218,13 +169,10 @@ const MealDetailsScreen = (props) => {
         <Divider />
         <CategoryTitle title={"Ingredients"} />
         <IngredientsList ingredients={meal?.extendedIngredients} />
-        {/* <TabView
-        renderTabBar={renderTabBar}
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: layout.width }}
-      /> */}
+        <Divider />
+        <Divider />
+        <CategoryTitle title={"Instructions"} />
+        <InstructionSteps steps={meal?.analyzedInstructions[0]?.steps} />
         <MealScheduleModal
           visible={isModalVisible}
           onClose={() => setModalVisible(false)}

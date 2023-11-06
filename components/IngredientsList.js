@@ -29,7 +29,6 @@ const IngredientsList = ({ ingredients }) => {
 
 const styles = StyleSheet.create({
   scrollContainer: {
-    // flexDirection: "row",
     alignItems: "center",
     marginLeft: 10,
   },
@@ -55,9 +54,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 5,
   },
-  ingredientConsistency: {
-    fontSize: 14,
-  },
+
   ingredientAmount: {
     fontSize: 14,
   },
