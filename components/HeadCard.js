@@ -7,13 +7,21 @@ import {
 } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
+import { useGenerateImageUrl } from "../hooks/useGenerateImageUrl";
 
 const HeadCard = (props) => {
   const navigation = useNavigation();
 
+  const image = useGenerateImageUrl(
+    props.mealData.id,
+    props.mealData.imageType
+  );
+
   return (
     <TouchableOpacity
-      onPress={() => navigation.navigate("Details", { meal: props.mealData })}
+      onPress={() =>
+        navigation.navigate("Details", { mealId: props.mealData.id })
+      }
     >
       <View style={styles.card}>
         <View style={styles.titleContainer}>
@@ -24,7 +32,7 @@ const HeadCard = (props) => {
           </Text>
         </View>
         <View style={styles.imageContainer}>
-          <ImageBackground source={{ uri: props.image }} style={styles.image}>
+          <ImageBackground source={{ uri: image }} style={styles.image}>
             {/* <View style={styles.year}>
 							<Text style={styles.yearText}>
 							{props.yearBuilt}

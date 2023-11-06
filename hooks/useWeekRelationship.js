@@ -1,6 +1,5 @@
 import moment from "moment";
 
-// Function to determine the week relationship
 export function useWeekRelationship(dateToCheck) {
   const currentDate = moment();
   const startOfThisWeek = currentDate.clone().startOf("week");

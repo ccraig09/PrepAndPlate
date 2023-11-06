@@ -60,7 +60,6 @@ export const addMeal = ({
     });
 
     const responseData = await response.json();
-    console.log(">>>responseData", responseData);
 
     dispatch({
       type: ADD_MEAL,
@@ -72,7 +71,7 @@ export const addMeal = ({
 export function searchMeals(searchWord) {
   return async (dispatch) => {
     const result = await fetch(
-      `${BASE_URL}/recipes/complexSearch?apiKey=${SecureStoreKeys.API_KEY}&number=5&query=${searchWord}&instructionsRequired=true&addRecipeNutrition=true&includeNutrition=true`
+      `${BASE_URL}/recipes/complexSearch?apiKey=${SecureStoreKeys.API_KEY}&number=5&query=${searchWord}&addRecipeNutrition=true`
     );
 
     const resultJson = await result.json();
@@ -80,5 +79,19 @@ export function searchMeals(searchWord) {
     // dispatch({ type: SEARCH_MEALS, payload: resultJson.results });
 
     return resultJson.results;
+  };
+}
+
+export function getMealById(id) {
+  return async (dispatch) => {
+    const result = await fetch(
+      `${BASE_URL}/recipes/${id}/information?apiKey=${SecureStoreKeys.API_KEY}&includeNutrition=true`
+    );
+
+    const resultJson = await result.json();
+
+    // dispatch({ type: SEARCH_MEALS, payload: resultJson.results });
+
+    return resultJson;
   };
 }

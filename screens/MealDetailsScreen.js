@@ -24,22 +24,27 @@ import MealScheduleModal from "../components/MealScheduleModal";
 import * as mealAction from "../redux/actions/mealsAction";
 import CategoryTitle from "../components/CategoryTitle";
 import NutritionBar from "./NutritionBar";
+import IngredientsList from "../components/IngredientsList";
+import { useGenerateImageUrl } from "../hooks/useGenerateImageUrl";
 
 const MealDetailsScreen = (props) => {
-  const { meal } = props.route.params;
+  const { mealId } = props.route.params;
   const navigation = useNavigation();
 
   // const meal = useSelector((state) =>
   //   state.meals.searchResults.find((meal) => meal.id == mealId)
   // );
+
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [meal, setMeal] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
   const [trueTagValues, setTrueTagValues] = useState({});
   const [routes] = useState([
     { key: "first", title: "Instructions" },
     { key: "second", title: "Ingredients" },
   ]);
+
   const [isModalVisible, setModalVisible] = useState(false);
 
   const layout = useWindowDimensions();
@@ -58,13 +63,16 @@ const MealDetailsScreen = (props) => {
   const matchingValues = {};
   const matchingObject = meal;
 
-  const nutrition = meal.nutrition.nutrients;
-  const calories = nutrition[0].amount.toFixed(0);
-  const fat = nutrition[1].amount.toFixed(0);
-  const netCarbs = nutrition[4].amount.toFixed(0);
-  const protein = nutrition[8].amount.toFixed(0);
+  const nutrition = meal?.nutrition?.nutrients;
+  const calories = nutrition?.[0]?.amount?.toFixed(0);
+  const fat = nutrition?.[1]?.amount?.toFixed(0);
+  const netCarbs = nutrition?.[4]?.amount?.toFixed(0);
+  const protein = nutrition?.[8]?.amount?.toFixed(0);
+  const image = useGenerateImageUrl(meal?.id, meal?.imageType, "480x360");
 
-  const handleScheduleMeal = (selectedDate, timeOfDay) => {
+  const handleScheduleMeal = async (selectedDate, timeOfDay) => {
+    setIsLoading(true);
+
     const mealToSchedule = {
       mealId: meal.id,
       title: meal.title,
@@ -74,7 +82,7 @@ const MealDetailsScreen = (props) => {
       timeOfDay: timeOfDay,
     };
 
-    dispatch(mealAction.addMeal(mealToSchedule))
+    await dispatch(mealAction.addMeal(mealToSchedule))
       .then(() => {
         setIsLoading(false);
         Alert.alert("Created Successfully");
@@ -86,7 +94,21 @@ const MealDetailsScreen = (props) => {
     setModalVisible(false);
   };
 
-  useEffect(() => {
+  const loadMeal = async () => {
+    setIsLoading(true);
+    try {
+      await dispatch(mealAction.getMealById(mealId)).then((res) => {
+        setMeal(res);
+        console.log(">>>>>res", res.extendedIngredients);
+      });
+    } catch (e) {
+      console.log(e);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const compareKeys = () => {
     keysToCompare.forEach((key) => {
       if (matchingObject[key] === true) {
         matchingValues[key] = true;
@@ -94,7 +116,12 @@ const MealDetailsScreen = (props) => {
     });
     setTrueTagValues(matchingValues);
     console.log(">>>>>matchingValues", matchingValues);
-  }, []);
+  };
+
+  useEffect(() => {
+    loadMeal();
+    compareKeys();
+  }, [dispatch, mealId]);
 
   const Tags = () => {
     return (
@@ -167,7 +194,7 @@ const MealDetailsScreen = (props) => {
     <View style={styles.container}>
       <ScrollView>
         <View>
-          <Image source={{ uri: meal.image }} style={styles.image} />
+          <Image source={{ uri: image }} style={styles.image} />
         </View>
         <View style={styles.heading}>
           <Text style={styles.title}>{meal.title}</Text>
@@ -190,6 +217,7 @@ const MealDetailsScreen = (props) => {
         <NutritionBar protein={protein} fat={fat} netCarbs={netCarbs} />
         <Divider />
         <CategoryTitle title={"Ingredients"} />
+        <IngredientsList ingredients={meal?.extendedIngredients} />
         {/* <TabView
         renderTabBar={renderTabBar}
         navigationState={{ index, routes }}
@@ -237,6 +265,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
+    paddingBottom: 20,
   },
   heading: {
     marginHorizontal: 20,
