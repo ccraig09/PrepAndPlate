@@ -152,7 +152,7 @@ const HomeScreen = () => {
   );
 
   const onPressHandler = (data) => {
-    navigation.navigate("Details", { meal: data });
+    navigation.navigate("Details", { mealId: data.id });
   };
 
   if (isLoading) {
