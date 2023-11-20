@@ -17,6 +17,7 @@ import Colors from "../constants/Colors";
 import { InfoTag } from "../components/InfoTag";
 import MealScheduleModal from "../components/MealScheduleModal";
 import * as mealAction from "../redux/actions/mealsAction";
+import * as favoritesAction from "../redux/actions/favoritesAction";
 import CategoryTitle from "../components/CategoryTitle";
 import NutritionBar from "./NutritionBar";
 import IngredientsList from "../components/IngredientsList";
@@ -79,6 +80,26 @@ const MealDetailsScreen = (props) => {
         Alert.alert("An error occured. Try again", [{ text: "OK" }]);
       });
     setModalVisible(false);
+  };
+
+  const handleAddToFavorites = async () => {
+    setIsLoading(true);
+
+    const favoriteMeal = {
+      mealId: meal.id,
+      title: meal.title,
+      imageUrl: meal.image,
+      mealData: meal,
+    };
+    await dispatch(favoritesAction.addToFavorites(favoriteMeal))
+      .then(() => {
+        setIsLoading(false);
+        Alert.alert("Meal added to favorites");
+      })
+      .catch(() => {
+        setIsLoading(false);
+        Alert.alert("An error occured. Try again", [{ text: "OK" }]);
+      });
   };
 
   const loadMeal = async () => {
@@ -191,7 +212,7 @@ const MealDetailsScreen = (props) => {
             label: "Add to favorites",
             color: "white",
             style: { backgroundColor: Colors.secondary },
-            onPress: () => console.log("Pressed add"),
+            onPress: () => handleAddToFavorites(),
           },
           {
             icon: "calendar-today",

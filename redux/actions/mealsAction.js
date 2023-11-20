@@ -71,7 +71,7 @@ export const addMeal = ({
 export function searchMeals(searchWord) {
   return async (dispatch) => {
     const result = await fetch(
-      `${BASE_URL}/recipes/complexSearch?apiKey=${SecureStoreKeys.API_KEY}&number=5&query=${searchWord}&addRecipeNutrition=true`
+      `${BASE_URL}/recipes/complexSearch?apiKey=${SecureStoreKeys.API_KEY}&number=20&query=${searchWord}&addRecipeNutrition=true`
     );
 
     const resultJson = await result.json();
