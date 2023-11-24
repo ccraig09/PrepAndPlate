@@ -1,10 +1,14 @@
 import { StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 import React from "react";
+import { useRoute } from "@react-navigation/native";
+
 import Colors from "../constants/Colors";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Rating } from "react-native-ratings";
+
 const SectionItem = ({ item, onPress }) => {
-  console.log("item: ", item.imageUrl);
+  const route = useRoute();
+  console.log(">>>route", route);
+
   return (
     <TouchableOpacity onPress={onPress} style={styles.itemContainer}>
       <View>
